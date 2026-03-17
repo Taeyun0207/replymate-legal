@@ -95,32 +95,46 @@
     }
   }
 
+  const PENDING_CHECKOUT_KEY = "replymate_pending_checkout";
+
   async function createCheckout(plan, billingType) {
     const token = await getAccessToken();
     if (!token) {
-      await signInWithGoogle();
+      try {
+        sessionStorage.setItem(PENDING_CHECKOUT_KEY, JSON.stringify({ plan, billing: billingType || "annual" }));
+        await signInWithGoogle();
+      } catch (err) {
+        sessionStorage.removeItem(PENDING_CHECKOUT_KEY);
+        throw err;
+      }
       return;
     }
 
-    const res = await fetch(`${BACKEND}/billing/create-checkout-session`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        targetPlan: plan,
-        billingType: billingType || "annual"
-      })
-    });
+    let data;
+    try {
+      const res = await fetch(`${BACKEND}/billing/create-checkout-session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          targetPlan: plan,
+          billingType: billingType || "annual"
+        })
+      });
+      data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || data.message || "Checkout failed");
+    } catch (err) {
+      if (err instanceof SyntaxError) throw new Error("Invalid response from server");
+      throw err;
+    }
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Checkout failed");
-
-    if (data.checkoutUrl) {
-      window.location.href = data.checkoutUrl;
+    const url = data.checkoutUrl || data.url || data.checkout_url;
+    if (url && typeof url === "string") {
+      window.location.href = url;
     } else {
-      throw new Error("No checkout URL received");
+      throw new Error(data.error || "No checkout URL received");
     }
   }
 
@@ -264,6 +278,28 @@
         section.insertBefore(banner, section.firstChild);
       });
     }
+
+    // Auto-redirect to Stripe after returning from Google sign-in
+    (async () => {
+      const pending = sessionStorage.getItem(PENDING_CHECKOUT_KEY);
+      if (!pending) return;
+      try {
+        const { plan, billing } = JSON.parse(pending);
+        if (!plan || !["pro", "pro_plus"].includes(plan)) return;
+        let token = await getAccessToken();
+        if (!token) {
+          await new Promise((r) => setTimeout(r, 500));
+          token = await getAccessToken();
+        }
+        if (token) {
+          sessionStorage.removeItem(PENDING_CHECKOUT_KEY);
+          await createCheckout(plan, billing);
+        }
+      } catch (e) {
+        sessionStorage.removeItem(PENDING_CHECKOUT_KEY);
+        console.error("[ReplyMate Upgrade] Pending checkout failed", e);
+      }
+    })();
 
     // Fetch subscription status and apply Cancel UI for Pro/Pro+ subscribers
     (async () => {
