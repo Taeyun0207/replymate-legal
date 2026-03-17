@@ -106,7 +106,7 @@ The upgrade page uses these on Pro/Pro+ plan cards:
 3. User is redirected to Stripe payment page
 4. After payment, user returns to upgrade page with `?success=1`
 
-**Cancel subscription:** Calls `POST /billing/cancel-subscription`. Schedules cancellation at period end; user keeps access until then.
+**Cancel subscription:** Calls `POST /billing/cancel-subscription`. Schedules cancellation at period end; user keeps access until then. The button then changes to **Keep subscription**; clicking it calls `POST /billing/keep-subscription` to reactivate.
 
 ---
 
@@ -131,8 +131,9 @@ Replace `YOUR_EXTENSION_ID` with your published extension ID (from Chrome Web St
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/billing/create-checkout-session` | POST | Creates Stripe checkout, returns `checkoutUrl` |
-| `/billing/me` | GET | Returns current plan (`free`, `pro`, `pro_plus`) |
+| `/billing/me` | GET | Returns current plan (`free`, `pro`, `pro_plus`) and `cancelAtPeriodEnd` |
 | `/billing/cancel-subscription` | POST | Schedules cancel at period end, returns `currentPeriodEnd` |
+| `/billing/keep-subscription` | POST | Reactivates subscription (removes cancel-at-period-end) |
 
 ---
 

@@ -91,7 +91,7 @@
     if (error) throw error;
   }
 
-  /** Fetches current subscription plan. Returns "free"|"pro"|"pro_plus" or null if unknown. */
+  /** Fetches subscription status. Returns { plan, cancelAtPeriodEnd } or null. */
   async function getSubscriptionStatus() {
     const token = await getAccessToken();
     if (!token) return null;
@@ -103,9 +103,11 @@
       if (!res.ok) return null;
       const data = await res.json();
       const plan = (data.plan || data.subscription?.plan || "").toLowerCase();
-      if (["free", "pro", "pro_plus"].includes(plan)) return plan;
-      if (plan === "proplus") return "pro_plus";
-      return null;
+      let planVal = null;
+      if (["free", "pro", "pro_plus"].includes(plan)) planVal = plan;
+      else if (plan === "proplus") planVal = "pro_plus";
+      const cancelAtPeriodEnd = !!(data.cancelAtPeriodEnd ?? data.cancel_at_period_end ?? data.subscription?.cancel_at_period_end);
+      return planVal ? { plan: planVal, cancelAtPeriodEnd } : null;
     } catch {
       return null;
     }
@@ -158,6 +160,25 @@
     }
   }
 
+  /** Keeps subscription (undoes cancel_at_period_end). */
+  async function keepSubscription() {
+    const token = await getAccessToken();
+    if (!token) return null;
+
+    const res = await fetch(`${BACKEND}/billing/keep-subscription`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({})
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to keep subscription");
+    return data;
+  }
+
   /** Cancels subscription at period end. Returns { currentPeriodEnd } on success. */
   async function cancelSubscription() {
     const token = await getAccessToken();
@@ -196,6 +217,38 @@
     return (names[plan] && names[plan][getLang()]) || names[plan]?.en || plan;
   }
 
+  function applyCurrentPlanCardMarker(currentPlan) {
+    document.querySelectorAll(".plan-card[data-replymate-plan-type]").forEach((card) => {
+      const type = card.getAttribute("data-replymate-plan-type");
+      const isCurrent = type === currentPlan;
+      card.classList.toggle("current-plan", isCurrent);
+      const badgeLabel = (LABELS.currentPlanBadge && LABELS.currentPlanBadge[getLang()]) || LABELS.currentPlanBadge?.en || "Current Plan";
+      const featuredBadge = card.querySelector(".featured-badge");
+      if (isCurrent) {
+        if (featuredBadge) {
+          featuredBadge.textContent = badgeLabel;
+          featuredBadge.classList.add("current-plan-badge-card");
+        } else {
+          let badge = card.querySelector(".current-plan-badge-card");
+          if (!badge) {
+            badge = document.createElement("span");
+            badge.className = "current-plan-badge-card";
+            card.insertBefore(badge, card.firstChild);
+          }
+          badge.textContent = badgeLabel;
+        }
+      } else if (featuredBadge && featuredBadge.classList.contains("current-plan-badge-card")) {
+        const lang = card.closest("[id]")?.id || "en";
+        const defaultLabels = { en: "Most Popular", ko: "가장 인기", ja: "最も人気", es: "Más popular" };
+        featuredBadge.textContent = defaultLabels[lang] || defaultLabels.en;
+        featuredBadge.classList.remove("current-plan-badge-card");
+      } else {
+        const badge = card.querySelector(".current-plan-badge-card:not(.featured-badge)");
+        if (badge) badge.remove();
+      }
+    });
+  }
+
   function applyCurrentPlanDisplay(currentPlan) {
     const badges = document.querySelectorAll(".current-plan-badge");
     badges.forEach((badge) => {
@@ -221,10 +274,11 @@
     if (plan) applyCurrentPlanDisplay(plan);
   }
 
-  function applyCancelUI(currentPlan) {
+  function applyCancelUI(currentPlan, cancelAtPeriodEnd) {
     if (!currentPlan || currentPlan === "free") return;
 
-    const cancelLabel = t("cancel") || "Cancel subscription";
+    const isKeepMode = !!cancelAtPeriodEnd;
+    const label = isKeepMode ? (t("keepSubscription") || "Keep subscription") : (t("cancel") || "Cancel subscription");
     document.querySelectorAll("[data-replymate-plan]").forEach((btn) => {
       const plan = btn.getAttribute("data-replymate-plan");
       if (plan !== currentPlan) return;
@@ -233,15 +287,16 @@
       btn.classList.add("cancel-plan");
       btn.href = "#";
       btn.style.pointerEvents = "auto";
-      btn.textContent = cancelLabel;
+      btn.textContent = label;
       btn.setAttribute("data-replymate-cancel", "true");
+      btn.setAttribute("data-replymate-keep", isKeepMode ? "true" : "false");
     });
   }
 
   function updateCancelLabels() {
-    const cancelLabel = t("cancel") || "Cancel subscription";
     document.querySelectorAll("[data-replymate-cancel=true]").forEach((btn) => {
-      btn.textContent = cancelLabel;
+      const isKeep = btn.getAttribute("data-replymate-keep") === "true";
+      btn.textContent = isKeep ? (t("keepSubscription") || "Keep subscription") : (t("cancel") || "Cancel subscription");
     });
   }
 
@@ -255,7 +310,8 @@
       btn.classList.remove("loading");
       btn.style.pointerEvents = "auto";
       if (btn.getAttribute("data-replymate-cancel") === "true") {
-        btn.textContent = t("cancel") || "Cancel subscription";
+        const isKeep = btn.getAttribute("data-replymate-keep") === "true";
+        btn.textContent = isKeep ? (t("keepSubscription") || "Keep subscription") : (t("cancel") || "Cancel subscription");
       } else {
         btn.textContent = btn.getAttribute("data-replymate-original-text") || "Upgrade";
       }
@@ -273,9 +329,24 @@
   function clearButtonError(btn) {
     btn.classList.remove("error-state");
     if (btn.getAttribute("data-replymate-cancel") === "true") {
-      btn.textContent = t("cancel") || "Cancel subscription";
+      const isKeep = btn.getAttribute("data-replymate-keep") === "true";
+      btn.textContent = isKeep ? (t("keepSubscription") || "Keep subscription") : (t("cancel") || "Cancel subscription");
     } else {
       btn.textContent = btn.getAttribute("data-replymate-original-text") || "Upgrade";
+    }
+  }
+
+  async function handleKeepClick(btn) {
+    setButtonLoading(btn, true);
+    try {
+      await keepSubscription();
+      const msg = t("keepSuccess") || "Subscription continued.";
+      alert(msg);
+      location.reload();
+    } catch (err) {
+      console.error("[ReplyMate Upgrade]", err);
+      const errMsg = err && err.message ? err.message : "Something went wrong. Please try again.";
+      setButtonError(btn, errMsg);
     }
   }
 
@@ -371,11 +442,14 @@
       }
     })();
 
-    // Fetch subscription status, apply Cancel UI, and show current plan
+    // Fetch subscription status, apply Cancel/Keep UI, show current plan, mark current plan card
     (async () => {
-      const plan = await getSubscriptionStatus();
-      applyCancelUI(plan);
+      const status = await getSubscriptionStatus();
+      if (!status) return;
+      const { plan, cancelAtPeriodEnd } = status;
+      applyCancelUI(plan, cancelAtPeriodEnd);
       applyCurrentPlanDisplay(plan);
+      applyCurrentPlanCardMarker(plan);
     })();
 
     // Click handlers for upgrade buttons (which may become cancel buttons)
@@ -387,7 +461,11 @@
         if (!plan || !["pro", "pro_plus"].includes(plan)) return;
 
         if (btn.getAttribute("data-replymate-cancel") === "true") {
-          await handleCancelClick(btn);
+          if (btn.getAttribute("data-replymate-keep") === "true") {
+            await handleKeepClick(btn);
+          } else {
+            await handleCancelClick(btn);
+          }
           return;
         }
 
@@ -428,6 +506,11 @@
   const langObserver = new MutationObserver(() => {
     updateCancelLabels();
     updateCurrentPlanDisplay();
+    const badge = document.querySelector(".current-plan-badge[data-current-plan]");
+    if (badge) {
+      const plan = badge.getAttribute("data-current-plan");
+      if (plan) applyCurrentPlanCardMarker(plan);
+    }
   });
   langObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
 })();
