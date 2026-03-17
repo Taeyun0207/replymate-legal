@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReplyMate - Plans & Pricing</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/icon32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../images/icon16.png">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #1a1a2e;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+        }
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            text-decoration: none;
+            color: inherit;
+        }
+        .logo img { width: 32px; height: 32px; object-fit: contain; }
+        .header-links {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            min-width: 36px;
+            font-size: 0.9rem;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .lang-btn:hover {
+            color: #1a1a2e;
+            background: #f1f5f9;
+        }
+        .lang-btn.active {
+            color: #7c3aed;
+            font-weight: 600;
+        }
+        .header-links a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .header-links a:hover { color: #7c3aed; }
+        .cta-header {
+            background: #7c3aed;
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .cta-header:hover { background: #6d28d9; }
+
+        .hero {
+            padding: 40px 24px 32px;
+            text-align: center;
+            background: linear-gradient(180deg, #faf5ff 0%, #fff 100%);
+        }
+        .hero h1 {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            color: #1a1a2e;
+        }
+        .hero p {
+            font-size: 0.95rem;
+            color: #64748b;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+        .hero-tagline {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #475569;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .hero-tagline .gmail-logo {
+            height: 20px;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        .pricing {
+            padding: 32px 24px 100px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            align-items: stretch;
+        }
+        @media (max-width: 900px) {
+            .pricing-grid { grid-template-columns: 1fr; }
+        }
+        .plan-card {
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.2s;
+        }
+        .plan-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        .plan-card.featured {
+            border-color: #7c3aed;
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.2);
+            position: relative;
+        }
+        .plan-card.featured .featured-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #7c3aed;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 100px;
+        }
+        .plan-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+        .plan-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+        .plan-price span {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+        .plan-desc {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-bottom: 24px;
+            min-height: 40px;
+        }
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+            flex: 1;
+        }
+        .plan-features li {
+            padding: 8px 0;
+            color: #475569;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .plan-features li::before {
+            content: "✓";
+            color: #7c3aed;
+            font-weight: 700;
+        }
+        .plan-features li.feature-highlight {
+            font-weight: 600;
+            color: #334155;
+        }
+        .plan-cta {
+            display: block;
+            text-align: center;
+            padding: 14px 24px;
+            border-radius: 100px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-top: auto;
+            border: none;
+        }
+        .plan-cta.primary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(109, 40, 217, 0.25);
+        }
+        .plan-cta.primary:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            box-shadow: 0 4px 12px rgba(109, 40, 217, 0.3);
+        }
+        .plan-cta.secondary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(109, 40, 217, 0.25);
+        }
+        .plan-cta.secondary:hover {
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            box-shadow: 0 4px 12px rgba(109, 40, 217, 0.3);
+        }
+        .plan-cta.free {
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+        }
+        .plan-cta.free:hover {
+            background: #e2e8f0;
+        }
+
+        /* Billing toggle */
+        .billing-option {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .billing-option:hover {
+            border-color: #cbd5e1;
+        }
+        .billing-option.selected {
+            border-color: #7c3aed;
+            background: #faf5ff;
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.12);
+        }
+        .billing-option {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .billing-option input {
+            margin-right: 10px;
+            accent-color: #7c3aed;
+        }
+        .billing-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .billing-label {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .billing-badge {
+            background: #7c3aed;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 100px;
+            letter-spacing: 0.02em;
+        }
+        .billing-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            line-height: 1.2;
+        }
+        .billing-option.selected .billing-price:first-of-type {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+        .billing-yearly {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 2px;
+        }
+        .billing-save {
+            font-size: 0.8rem;
+            color: #059669;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .footer {
+            padding: 40px 24px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        .footer a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .footer a:hover { color: #7c3aed; }
+        .language-content { display: none; }
+        .language-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="../index.html" class="logo">
+            <img src="../images/icon32.png" alt="ReplyMate">
+            ReplyMate
+        </a>
+        <div class="header-links">
+            <button class="lang-btn active" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="ko">한</button>
+            <button class="lang-btn" data-lang="ja">日</button>
+            <button class="lang-btn" data-lang="es">ES</button>
+            <a href="https://chromewebstore.google.com/detail/replymate/peiobdhdmdklnkkfbcnmindgpclikkfo" target="_blank" rel="noopener noreferrer" class="cta-header nav-cta">Add to Chrome</a>
+        </div>
+    </header>
+
+    <!-- English -->
+    <div id="en" class="language-content active">
+    <section class="hero">
+        <h1>Choose your plan</h1>
+        <p class="hero-tagline">Deep Integration with <img src="../images/gmail64.png" alt="Gmail" class="gmail-logo"></p>
+    </section>
+
+    <section class="pricing">
+        <div class="pricing-grid">
+            <div class="plan-card">
+                <div class="plan-name">Free</div>
+                <div class="plan-price">$0</div>
+                <div class="plan-desc">Get started with AI replies</div>
+                <ul class="plan-features">
+                    <li>25 AI replies per month</li>
+                    <li>15 translations per day</li>
+                    <li>All tone options</li>
+                    <li>Works in Gmail</li>
+                </ul>
+                <a href="https://chromewebstore.google.com/detail/replymate/peiobdhdmdklnkkfbcnmindgpclikkfo" target="_blank" rel="noopener noreferrer" class="plan-cta free">Get started free</a>
+            </div>
+
+            <div class="plan-card">
+                <div class="plan-name">Pro</div>
+                <div class="plan-price pro-price">$1.66<span>/month</span></div>
+                <div class="plan-desc">For regular email users</div>
+                <ul class="plan-features">
+                    <li class="feature-highlight">100 AI replies per month</li>
+                    <li class="feature-highlight">Unlimited translations</li>
+                    <li>All tone options</li>
+                    <li>Works in Gmail</li>
+                    <li>Priority support</li>
+                    <li>Cancel anytime</li>
+                </ul>
+                <div class="billing-options">
+                    <label class="billing-option" data-plan="pro" data-type="monthly">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing" value="monthly"> <span class="billing-label">Monthly Plan</span></span>
+                            <span class="billing-price">$1.99 /month</span>
+                        </div>
+                    </label>
+                    <label class="billing-option selected" data-plan="pro" data-type="annual">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing" value="annual" checked> <span class="billing-label">Annual Plan</span> <span class="billing-badge">2 months free</span></span>
+                        </div>
+                        <span class="billing-price">$1.66 /month</span>
+                        <div class="billing-yearly">$19.90 billed yearly</div>
+                        <div class="billing-save">Save $3.98 per year</div>
+                    </label>
+                </div>
+                <a href="#" class="plan-cta primary">Upgrade to Pro</a>
+            </div>
+
+            <div class="plan-card featured">
+                <span class="featured-badge">Most Popular</span>
+                <div class="plan-name">Pro+</div>
+                <div class="plan-price proplus-price">$4.16<span>/month</span></div>
+                <div class="plan-desc">For power users</div>
+                <ul class="plan-features">
+                    <li class="feature-highlight">1,000 AI replies per month</li>
+                    <li class="feature-highlight">Unlimited translations</li>
+                    <li>All tone options</li>
+                    <li>Works in Gmail</li>
+                    <li>Priority support</li>
+                    <li>Cancel anytime</li>
+                </ul>
+                <div class="billing-options">
+                    <label class="billing-option" data-plan="proplus" data-type="monthly">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing" value="monthly"> <span class="billing-label">Monthly Plan</span></span>
+                            <span class="billing-price">$4.99 /month</span>
+                        </div>
+                    </label>
+                    <label class="billing-option selected" data-plan="proplus" data-type="annual">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing" value="annual" checked> <span class="billing-label">Annual Plan</span> <span class="billing-badge">2 months free</span></span>
+                        </div>
+                        <span class="billing-price">$4.16 /month</span>
+                        <div class="billing-yearly">$49.90 billed yearly</div>
+                        <div class="billing-save">Save $9.98 per year</div>
+                    </label>
+                </div>
+                <a href="#" class="plan-cta secondary">Upgrade to Pro+</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p><a href="../privacy/index.html">Privacy Policy</a> · <a href="mailto:replymate.support@gmail.com">Contact</a></p>
+    </footer>
+    </div>
+
+    <!-- Korean -->
+    <div id="ko" class="language-content">
+    <section class="hero">
+        <h1>플랜 선택</h1>
+        <p class="hero-tagline">깊은 통합 <img src="../images/gmail64.png" alt="Gmail" class="gmail-logo"></p>
+    </section>
+    <section class="pricing">
+        <div class="pricing-grid">
+            <div class="plan-card">
+                <div class="plan-name">Free</div>
+                <div class="plan-price">$0</div>
+                <div class="plan-desc">AI 답장으로 시작하기</div>
+                <ul class="plan-features">
+                    <li>월 25회 AI 답장</li>
+                    <li>일 15회 번역</li>
+                    <li>모든 말투 옵션</li>
+                    <li>Gmail 지원</li>
+                </ul>
+                <a href="https://chromewebstore.google.com/detail/replymate/peiobdhdmdklnkkfbcnmindgpclikkfo" target="_blank" rel="noopener noreferrer" class="plan-cta free">무료로 시작</a>
+            </div>
+            <div class="plan-card">
+                <div class="plan-name">Pro</div>
+                <div class="plan-price pro-price">$1.66<span>/월</span></div>
+                <div class="plan-desc">일반 이메일 사용자용</div>
+                <ul class="plan-features">
+                    <li class="feature-highlight">월 100회 AI 답장</li>
+                    <li class="feature-highlight">무제한 번역</li>
+                    <li>모든 말투 옵션</li>
+                    <li>Gmail 지원</li>
+                    <li>우선 지원</li>
+                    <li>언제든 취소</li>
+                </ul>
+                <div class="billing-options">
+                    <label class="billing-option" data-plan="pro" data-type="monthly">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing" value="monthly"> <span class="billing-label">월간 플랜</span></span>
+                            <span class="billing-price">$1.99 /월</span>
+                        </div>
+                    </label>
+                    <label class="billing-option selected" data-plan="pro" data-type="annual">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing" value="annual" checked> <span class="billing-label">연간 플랜</span> <span class="billing-badge">2개월 무료</span></span>
+                        </div>
+                        <span class="billing-price">$1.66 /월</span>
+                        <div class="billing-yearly">연 $19.90 결제</div>
+                        <div class="billing-save">연 $3.98 절약</div>
+                    </label>
+                </div>
+                <a href="#" class="plan-cta primary">Pro 업그레이드</a>
+            </div>
+            <div class="plan-card featured">
+                <span class="featured-badge">가장 인기</span>
+                <div class="plan-name">Pro+</div>
+                <div class="plan-price proplus-price">$4.16<span>/월</span></div>
+                <div class="plan-desc">파워 유저용</div>
+                <ul class="plan-features">
+                    <li class="feature-highlight">월 1,000회 AI 답장</li>
+                    <li class="feature-highlight">무제한 번역</li>
+                    <li>모든 말투 옵션</li>
+                    <li>Gmail 지원</li>
+                    <li>우선 지원</li>
+                    <li>언제든 취소</li>
+                </ul>
+                <div class="billing-options">
+                    <label class="billing-option" data-plan="proplus" data-type="monthly">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing" value="monthly"> <span class="billing-label">월간 플랜</span></span>
+                            <span class="billing-price">$4.99 /월</span>
+                        </div>
+                    </label>
+                    <label class="billing-option selected" data-plan="proplus" data-type="annual">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing" value="annual" checked> <span class="billing-label">연간 플랜</span> <span class="billing-badge">2개월 무료</span></span>
+                        </div>
+                        <span class="billing-price">$4.16 /월</span>
+                        <div class="billing-yearly">연 $49.90 결제</div>
+                        <div class="billing-save">연 $9.98 절약</div>
+                    </label>
+                </div>
+                <a href="#" class="plan-cta secondary">Pro+ 업그레이드</a>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <p><a href="../privacy/index.html">개인정보 처리방침</a> · <a href="mailto:replymate.support@gmail.com">문의하기</a></p>
+    </footer>
+    </div>
+
+    <!-- Japanese -->
+    <div id="ja" class="language-content">
+    <section class="hero">
+        <h1>プランを選ぶ</h1>
+        <p class="hero-tagline">深い統合 <img src="../images/gmail64.png" alt="Gmail" class="gmail-logo"></p>
+    </section>
+    <section class="pricing">
+        <div class="pricing-grid">
+            <div class="plan-card">
+                <div class="plan-name">Free</div>
+                <div class="plan-price">$0</div>
+                <div class="plan-desc">AI返信で始める</div>
+                <ul class="plan-features">
+                    <li>月25回のAI返信</li>
+                    <li>1日15回の翻訳</li>
+                    <li>全トーンオプション</li>
+                    <li>Gmail対応</li>
+                </ul>
+                <a href="https://chromewebstore.google.com/detail/replymate/peiobdhdmdklnkkfbcnmindgpclikkfo" target="_blank" rel="noopener noreferrer" class="plan-cta free">無料で始める</a>
+            </div>
+            <div class="plan-card">
+                <div class="plan-name">Pro</div>
+                <div class="plan-price pro-price">$1.66<span>/月</span></div>
+                <div class="plan-desc">通常のメールユーザー向け</div>
+                <ul class="plan-features">
+                    <li class="feature-highlight">月100回のAI返信</li>
+                    <li class="feature-highlight">無制限翻訳</li>
+                    <li>全トーンオプション</li>
+                    <li>Gmail対応</li>
+                    <li>優先サポート</li>
+                    <li>いつでも解約</li>
+                </ul>
+                <div class="billing-options">
+                    <label class="billing-option" data-plan="pro" data-type="monthly">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing-ja" value="monthly"> <span class="billing-label">月額プラン</span></span>
+                            <span class="billing-price">$1.99 /月</span>
+                        </div>
+                    </label>
+                    <label class="billing-option selected" data-plan="pro" data-type="annual">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing-ja" value="annual" checked> <span class="billing-label">年額プラン</span> <span class="billing-badge">2ヶ月無料</span></span>
+                        </div>
+                        <span class="billing-price">$1.66 /月</span>
+                        <div class="billing-yearly">年$19.90一括</div>
+                        <div class="billing-save">年間$3.98お得</div>
+                    </label>
+                </div>
+                <a href="#" class="plan-cta primary">Proにアップグレード</a>
+            </div>
+            <div class="plan-card featured">
+                <span class="featured-badge">最も人気</span>
+                <div class="plan-name">Pro+</div>
+                <div class="plan-price proplus-price">$4.16<span>/月</span></div>
+                <div class="plan-desc">パワーユーザー向け</div>
+                <ul class="plan-features">
+                    <li class="feature-highlight">月1,000回のAI返信</li>
+                    <li class="feature-highlight">無制限翻訳</li>
+                    <li>全トーンオプション</li>
+                    <li>Gmail対応</li>
+                    <li>優先サポート</li>
+                    <li>いつでも解約</li>
+                </ul>
+                <div class="billing-options">
+                    <label class="billing-option" data-plan="proplus" data-type="monthly">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing-ja" value="monthly"> <span class="billing-label">月額プラン</span></span>
+                            <span class="billing-price">$4.99 /月</span>
+                        </div>
+                    </label>
+                    <label class="billing-option selected" data-plan="proplus" data-type="annual">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing-ja" value="annual" checked> <span class="billing-label">年額プラン</span> <span class="billing-badge">2ヶ月無料</span></span>
+                        </div>
+                        <span class="billing-price">$4.16 /月</span>
+                        <div class="billing-yearly">年$49.90一括</div>
+                        <div class="billing-save">年間$9.98お得</div>
+                    </label>
+                </div>
+                <a href="#" class="plan-cta secondary">Pro+にアップグレード</a>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <p><a href="../privacy/index.html">プライバシーポリシー</a> · <a href="mailto:replymate.support@gmail.com">お問い合わせ</a></p>
+    </footer>
+    </div>
+
+    <!-- Spanish -->
+    <div id="es" class="language-content">
+    <section class="hero">
+        <h1>Elige tu plan</h1>
+        <p class="hero-tagline">Integración profunda con <img src="../images/gmail64.png" alt="Gmail" class="gmail-logo"></p>
+    </section>
+    <section class="pricing">
+        <div class="pricing-grid">
+            <div class="plan-card">
+                <div class="plan-name">Free</div>
+                <div class="plan-price">$0</div>
+                <div class="plan-desc">Empieza con respuestas IA</div>
+                <ul class="plan-features">
+                    <li>25 respuestas IA al mes</li>
+                    <li>15 traducciones al día</li>
+                    <li>Todos los tonos</li>
+                    <li>Funciona en Gmail</li>
+                </ul>
+                <a href="https://chromewebstore.google.com/detail/replymate/peiobdhdmdklnkkfbcnmindgpclikkfo" target="_blank" rel="noopener noreferrer" class="plan-cta free">Empezar gratis</a>
+            </div>
+            <div class="plan-card">
+                <div class="plan-name">Pro</div>
+                <div class="plan-price pro-price">$1.66<span>/mes</span></div>
+                <div class="plan-desc">Para usuarios habituales</div>
+                <ul class="plan-features">
+                    <li class="feature-highlight">100 respuestas IA al mes</li>
+                    <li class="feature-highlight">Traducciones ilimitadas</li>
+                    <li>Todos los tonos</li>
+                    <li>Funciona en Gmail</li>
+                    <li>Soporte prioritario</li>
+                    <li>Cancela cuando quieras</li>
+                </ul>
+                <div class="billing-options">
+                    <label class="billing-option" data-plan="pro" data-type="monthly">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing-es" value="monthly"> <span class="billing-label">Plan mensual</span></span>
+                            <span class="billing-price">$1.99 /mes</span>
+                        </div>
+                    </label>
+                    <label class="billing-option selected" data-plan="pro" data-type="annual">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing-es" value="annual" checked> <span class="billing-label">Plan anual</span> <span class="billing-badge">2 meses gratis</span></span>
+                        </div>
+                        <span class="billing-price">$1.66 /mes</span>
+                        <div class="billing-yearly">$19.90 facturado al año</div>
+                        <div class="billing-save">Ahorra $3.98 al año</div>
+                    </label>
+                </div>
+                <a href="#" class="plan-cta primary">Actualizar a Pro</a>
+            </div>
+            <div class="plan-card featured">
+                <span class="featured-badge">Más popular</span>
+                <div class="plan-name">Pro+</div>
+                <div class="plan-price proplus-price">$4.16<span>/mes</span></div>
+                <div class="plan-desc">Para usuarios avanzados</div>
+                <ul class="plan-features">
+                    <li class="feature-highlight">1,000 respuestas IA al mes</li>
+                    <li class="feature-highlight">Traducciones ilimitadas</li>
+                    <li>Todos los tonos</li>
+                    <li>Funciona en Gmail</li>
+                    <li>Soporte prioritario</li>
+                    <li>Cancela cuando quieras</li>
+                </ul>
+                <div class="billing-options">
+                    <label class="billing-option" data-plan="proplus" data-type="monthly">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing-es" value="monthly"> <span class="billing-label">Plan mensual</span></span>
+                            <span class="billing-price">$4.99 /mes</span>
+                        </div>
+                    </label>
+                    <label class="billing-option selected" data-plan="proplus" data-type="annual">
+                        <div class="billing-row">
+                            <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing-es" value="annual" checked> <span class="billing-label">Plan anual</span> <span class="billing-badge">2 meses gratis</span></span>
+                        </div>
+                        <span class="billing-price">$4.16 /mes</span>
+                        <div class="billing-yearly">$49.90 facturado al año</div>
+                        <div class="billing-save">Ahorra $9.98 al año</div>
+                    </label>
+                </div>
+                <a href="#" class="plan-cta secondary">Actualizar a Pro+</a>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <p><a href="../privacy/index.html">Política de privacidad</a> · <a href="mailto:replymate.support@gmail.com">Contacto</a></p>
+    </footer>
+    </div>
+
+    <script>
+        const navLabels = {
+            en: { cta: 'Add to Chrome' },
+            ko: { cta: 'Chrome에 추가' },
+            ja: { cta: 'Chromeに追加' },
+            es: { cta: 'Añadir a Chrome' }
+        };
+        function setLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.lang === lang);
+            });
+            document.querySelectorAll('.language-content').forEach(c => c.classList.remove('active'));
+            const el = document.getElementById(lang);
+            if (el) el.classList.add('active');
+            const labels = navLabels[lang];
+            if (labels) document.querySelectorAll('.nav-cta').forEach(e => { e.textContent = labels.cta; });
+            document.documentElement.lang = lang;
+            if (history.replaceState) history.replaceState(null, '', '?lang=' + lang);
+        }
+        const params = new URLSearchParams(location.search);
+        const langParam = params.get('lang');
+        if (['en','ko','ja','es'].includes(langParam)) setLang(langParam);
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => setLang(btn.dataset.lang));
+        });
+        document.querySelectorAll('.billing-option').forEach(opt => {
+            opt.addEventListener('click', function() {
+                const plan = this.dataset.plan;
+                const type = this.dataset.type;
+                const container = this.closest('.plan-card');
+                container.querySelectorAll('.billing-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                this.querySelector('input').checked = true;
+                const priceEl = container.querySelector('.plan-price');
+                if (plan === 'pro') {
+                    priceEl.innerHTML = type === 'annual' ? '$1.66<span>/month</span>' : '$1.99<span>/month</span>';
+                } else {
+                    priceEl.innerHTML = type === 'annual' ? '$4.16<span>/month</span>' : '$4.99<span>/month</span>';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

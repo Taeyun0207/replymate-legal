@@ -84,6 +84,15 @@
         .cta-header:hover {
             background: #6d28d9;
         }
+        .header-upgrade {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .header-upgrade:hover {
+            color: #7c3aed;
+        }
 
         /* Hero */
         .hero {
@@ -341,6 +350,7 @@
             ReplyMate
         </a>
         <div class="header-right">
+            <a href="upgrade/index.html" class="header-upgrade" id="header-upgrade">Upgrade</a>
             <button class="lang-btn active" data-lang="en">EN</button>
             <button class="lang-btn" data-lang="ko">한</button>
             <button class="lang-btn" data-lang="ja">日</button>
@@ -429,6 +439,7 @@
         </section>
         <footer class="footer">
             <div class="footer-links">
+                <a href="upgrade/index.html" class="footer-upgrade">Upgrade</a>
                 <a href="privacy/index.html">Privacy Policy</a>
                 <a href="mailto:replymate.support@gmail.com">Contact</a>
             </div>
@@ -516,6 +527,7 @@
         </section>
         <footer class="footer">
             <div class="footer-links">
+                <a href="upgrade/index.html?lang=ko" class="footer-upgrade">업그레이드</a>
                 <a href="privacy/index.html">개인정보 처리방침</a>
                 <a href="mailto:replymate.support@gmail.com">문의하기</a>
             </div>
@@ -603,6 +615,7 @@
         </section>
         <footer class="footer">
             <div class="footer-links">
+                <a href="upgrade/index.html?lang=ja" class="footer-upgrade">アップグレード</a>
                 <a href="privacy/index.html">プライバシーポリシー</a>
                 <a href="mailto:replymate.support@gmail.com">お問い合わせ</a>
             </div>
@@ -690,6 +703,7 @@
         </section>
         <footer class="footer">
             <div class="footer-links">
+                <a href="upgrade/index.html?lang=es" class="footer-upgrade">Actualizar</a>
                 <a href="privacy/index.html">Política de privacidad</a>
                 <a href="mailto:replymate.support@gmail.com">Contacto</a>
             </div>
@@ -698,6 +712,20 @@
     </div>
 
     <script>
+        const upgradeLabels = { en: 'Upgrade', ko: '업그레이드', ja: 'アップグレード', es: 'Actualizar' };
+        const params = new URLSearchParams(location.search);
+        const initLang = params.get('lang');
+        if (['en','ko','ja','es'].includes(initLang)) {
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === initLang));
+            document.querySelectorAll('.language-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(initLang).classList.add('active');
+            const upgradeEl = document.getElementById('header-upgrade');
+            if (upgradeEl) {
+                upgradeEl.textContent = upgradeLabels[initLang] || 'Upgrade';
+                upgradeEl.href = initLang === 'en' ? 'upgrade/index.html' : 'upgrade/index.html?lang=' + initLang;
+            }
+            document.documentElement.lang = initLang;
+        }
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const lang = this.getAttribute('data-lang');
@@ -705,6 +733,11 @@
                 this.classList.add('active');
                 document.querySelectorAll('.language-content').forEach(c => c.classList.remove('active'));
                 document.getElementById(lang).classList.add('active');
+                const upgradeEl = document.getElementById('header-upgrade');
+                if (upgradeEl) {
+                    upgradeEl.textContent = upgradeLabels[lang] || 'Upgrade';
+                    upgradeEl.href = lang === 'en' ? 'upgrade/index.html' : 'upgrade/index.html?lang=' + lang;
+                }
                 document.documentElement.lang = lang === 'en' ? 'en' : lang === 'ko' ? 'ko' : lang === 'ja' ? 'ja' : 'es';
             });
         });
