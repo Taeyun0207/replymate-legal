@@ -32,6 +32,54 @@ BILLING_CANCEL_URL=https://replymateai.app/upgrade/
 
 **Portal sync:** When users change/cancel/reactivate in the Stripe Customer Portal, Stripe sends `customer.subscription.updated` or `customer.subscription.deleted`. Your webhook must update the user's plan in your DB so `/billing/me` returns the correct data. The frontend refetches when the user returns from the portal.
 
+### Backend webhook implementation (required for cancel/sync)
+
+If cancellations or portal changes are not reflected in your app, your webhook handler is not updating the DB. Implement the following:
+
+**`customer.subscription.updated`** – Fired when user cancels (at period end), reactivates, or changes plan:
+
+**Important:** When a user cancels from the portal, Stripe sets `cancel_at_period_end: true` but keeps `status: "active"` until the period ends. You must handle this case – update your DB with `cancelAtPeriodEnd: true` so `/billing/me` returns it. Otherwise the UI will still show "Renews on..." instead of "Cancelled — access until...".
+
+```js
+// In your webhook handler:
+const sub = event.data.object;
+const customerId = sub.customer;
+const status = sub.status;           // 'active', 'canceled', 'past_due', etc.
+const cancelAtPeriodEnd = !!sub.cancel_at_period_end;
+const currentPeriodEnd = sub.current_period_end;  // Unix timestamp
+
+// Look up user by Stripe customer ID (from your DB)
+const user = await findUserByStripeCustomerId(customerId);
+if (!user) return;
+
+if (status === 'canceled' || status === 'unpaid') {
+  // Subscription ended – downgrade to free
+  await updateUserPlan(user.id, 'free', null, null);
+} else if (status === 'active') {
+  // Map price ID to plan (pro/pro_plus) and interval (monthly/annual)
+  const priceId = sub.items?.data?.[0]?.price?.id;
+  const { plan, billing } = mapPriceToPlan(priceId);
+  const periodEndIso = currentPeriodEnd ? new Date(currentPeriodEnd * 1000).toISOString() : null;
+  // MUST persist cancelAtPeriodEnd so /billing/me returns it – this is the cancel-at-period-end case
+  await updateUserPlan(user.id, plan, billing, periodEndIso, cancelAtPeriodEnd);
+}
+```
+
+**`customer.subscription.deleted`** – Fired when subscription is fully canceled/ended:
+
+```js
+const sub = event.data.object;
+const customerId = sub.customer;
+const user = await findUserByStripeCustomerId(customerId);
+if (user) await updateUserPlan(user.id, 'free', null, null);
+```
+
+**`/billing/me`** must read from your DB (not Stripe directly) and return:
+- `plan`: `"free"` | `"pro"` | `"pro_plus"`
+- `cancelAtPeriodEnd`: boolean
+- `billingInterval`: `"monthly"` | `"annual"`
+- `currentPeriodEnd`: ISO date string
+
 ---
 
 ## 3. Supabase Auth – Redirect URLs (required)
@@ -180,6 +228,14 @@ Replace `YOUR_EXTENSION_ID` with your published extension ID (from Chrome Web St
 
 - Remove `http://localhost:*` from Supabase Redirect URLs, or
 - Add your production URL and always test from production
+
+### Cancellation not updating / user remains on plan
+
+**Cause:** The backend webhook is not updating the DB when Stripe sends `customer.subscription.updated` or `customer.subscription.deleted`.
+
+**Common mistake:** When a user cancels from the portal, Stripe sends `customer.subscription.updated` with `status: "active"` and `cancel_at_period_end: true` – the subscription is NOT `"canceled"` yet. If your handler only does something when `status === "canceled"`, it will ignore this event. You must handle `status === "active"` and persist `cancelAtPeriodEnd` and `currentPeriodEnd` so `/billing/me` returns them.
+
+**Fix:** In the `status === "active"` branch, call your update function with `cancelAtPeriodEnd` and `currentPeriodEnd`. Ensure `/billing/me` reads these from your DB and returns `cancelAtPeriodEnd` and `currentPeriodEnd` in the response.
 
 ### Subscription data not updating after purchase or portal changes
 
