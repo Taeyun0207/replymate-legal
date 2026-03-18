@@ -509,7 +509,7 @@
         }
         .footer a:hover { color: #7c3aed; }
         .language-content { display: none; }
-        .language-content.active { display: block; }
+        .language-content.active { display: block !important; }
     </style>
 </head>
 <body>
@@ -893,6 +893,12 @@
     </div>
 
     <script>
+        (function ensureContentVisible() {
+            if (!document.querySelector('.language-content.active')) {
+                var en = document.getElementById('en');
+                if (en) en.classList.add('active');
+            }
+        })();
         window.REPLYMATE_BACKEND = "https://replymate-backend-bot8.onrender.com";
         window.REPLYMATE_SUPABASE_URL = "https://cmmoirdihefyswerkkay.supabase.co";
         window.REPLYMATE_SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtbW9pcmRpaGVmeXN3ZXJra2F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjIzNDUsImV4cCI6MjA4OTAzODM0NX0.gOButw9b4ZrUhVFMBwqf5le2rq7pAeJ0pFhSTKEOcek";
