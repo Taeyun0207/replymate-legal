@@ -137,6 +137,7 @@ Replace `YOUR_EXTENSION_ID` with your published extension ID (from Chrome Web St
 | `/billing/me` | GET | Returns `plan`, `cancelAtPeriodEnd`, **`billingInterval`** (`monthly`/`annual`), and **`currentPeriodEnd`** (ISO date) — shown as "Renews on [date]" when active, or "Cancelled. Active until [date]" when cancelled |
 | `/billing/cancel-subscription` | POST | Schedules cancel at period end, returns `currentPeriodEnd` |
 | `/billing/keep-subscription` | POST | Reactivates subscription (removes cancel-at-period-end) |
+| `/billing/create-portal-session` | POST | Creates Stripe Customer Portal session for managing subscription (change monthly↔annual, payment method, cancel). Body: `{ returnUrl }`. Returns `{ url }`. |
 
 ---
 
@@ -162,6 +163,12 @@ Replace `YOUR_EXTENSION_ID` with your published extension ID (from Chrome Web St
 - Ensure your backend implements `POST /billing/keep-subscription` to reactivate a cancelled subscription (set Stripe `cancel_at_period_end` to false).
 - The endpoint should return 200 with optional JSON; empty response is supported.
 - If your backend uses a different path (e.g. `reactivate-subscription`), set `window.REPLYMATE_KEEP_SUBSCRIPTION_PATH = "reactivate-subscription"` before loading the checkout script. The frontend will also try `reactivate-subscription` and `undo-cancel` if `keep-subscription` returns 404.
+
+### Changing Monthly ↔ Annual within the same plan
+
+When a user on Pro Monthly selects Pro Annual (or vice versa) in their current plan card, the button changes to **"Switch to Annual"** or **"Switch to Monthly"**. Clicking it opens the **Stripe Customer Portal**, where they can change their billing interval.
+
+**Backend:** Implement `POST /billing/create-portal-session` that creates a Stripe Billing Portal session and returns `{ url }`. Use [Stripe's Customer Portal API](https://stripe.com/docs/customer-management/creating-portal-session). The `return_url` should be the upgrade page URL.
 
 ---
 

@@ -193,6 +193,30 @@
     }
   }
 
+  /** Opens Stripe Customer Portal for managing subscription (change billing, payment method, etc.). */
+  async function createPortalSession() {
+    const token = await getAccessToken();
+    if (!token) return null;
+
+    const res = await fetch(`${BACKEND}/billing/create-portal-session`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ returnUrl: window.location.href })
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || data.message || "Failed to open billing portal");
+    const url = data.url || data.portalUrl || data.portal_url;
+    if (url && typeof url === "string") {
+      window.location.href = url;
+    } else {
+      throw new Error(data.error || "No portal URL received");
+    }
+  }
+
   /** Keeps subscription (undoes cancel_at_period_end). */
   async function keepSubscription() {
     const token = await getAccessToken();
@@ -368,9 +392,8 @@
       const formatted = formatEndDate(currentPeriodEnd);
       let text;
       if (cancelAtPeriodEnd) {
-        const cancelled = (LABELS.cancelledPrefix && LABELS.cancelledPrefix[lang]) || LABELS.cancelledPrefix?.en || "Cancelled.";
-        const activeUntil = (LABELS.activeUntil && LABELS.activeUntil[lang]) || LABELS.activeUntil?.en || "Active until {date}";
-        text = cancelled + " " + activeUntil.replace("{date}", formatted);
+        const template = (LABELS.cancelledAccessUntil && LABELS.cancelledAccessUntil[lang]) || LABELS.cancelledAccessUntil?.en || "Cancelled — access available until {date}";
+        text = template.replace("{date}", formatted);
       } else {
         const template = (LABELS.renewsOn && LABELS.renewsOn[lang]) || LABELS.renewsOn?.en || "Renews on {date}";
         text = template.replace("{date}", formatted);
@@ -403,6 +426,38 @@
       btn.textContent = label;
       btn.setAttribute("data-replymate-cancel", "true");
       btn.setAttribute("data-replymate-keep", isKeepMode ? "true" : "false");
+    });
+    updateBillingChangeButton();
+  }
+
+  function updateBillingChangeButton() {
+    const currentPlan = document.body.getAttribute("data-replymate-plan");
+    const currentBilling = document.body.getAttribute("data-replymate-billing");
+    if (!currentPlan || currentPlan === "free" || !currentBilling) return;
+
+    document.querySelectorAll("[data-replymate-plan][data-replymate-cancel=true]").forEach((btn) => {
+      const plan = btn.getAttribute("data-replymate-plan");
+      if (plan !== currentPlan) return;
+
+      const card = btn.closest(".plan-card");
+      const selectedOpt = card && card.querySelector(".billing-option input:checked");
+      const selectedBilling = selectedOpt ? selectedOpt.closest(".billing-option").getAttribute("data-type") : null;
+
+      if (selectedBilling && selectedBilling !== currentBilling) {
+        const label = selectedBilling === "annual"
+          ? (t("switchToAnnual") || "Switch to Annual")
+          : (t("switchToMonthly") || "Switch to Monthly");
+        btn.textContent = label;
+        btn.setAttribute("data-replymate-switch-billing", "true");
+        btn.classList.add("primary");
+        btn.classList.remove("cancel-plan");
+      } else {
+        btn.removeAttribute("data-replymate-switch-billing");
+        btn.classList.remove("primary");
+        btn.classList.add("cancel-plan");
+        const isKeep = btn.getAttribute("data-replymate-keep") === "true";
+        btn.textContent = isKeep ? (t("keepSubscription") || "Keep subscription") : (t("cancel") || "Cancel subscription");
+      }
     });
   }
 
@@ -545,21 +600,6 @@
       document.body.setAttribute("data-replymate-cancel-at-period-end", cancelAtPeriodEnd ? "true" : "false");
     })();
 
-    // Plan card click: show purple border when user clicks a different plan (not their current)
-    document.querySelectorAll(".plan-card[data-replymate-plan-type]").forEach((card) => {
-      card.addEventListener("click", (e) => {
-        if (e.target.closest("a, button, .billing-option, input")) return;
-        const type = card.getAttribute("data-replymate-plan-type");
-        const currentPlan = document.body.getAttribute("data-replymate-plan") || "free";
-        if (type === currentPlan || type === "free") {
-          document.querySelectorAll(".plan-card.plan-considering").forEach((c) => c.classList.remove("plan-considering"));
-        } else {
-          document.querySelectorAll(".plan-card.plan-considering").forEach((c) => c.classList.remove("plan-considering"));
-          card.classList.add("plan-considering");
-        }
-      });
-    });
-
     // Click handlers for upgrade buttons (which may become cancel buttons)
     upgradeBtns.forEach((btn) => {
       btn.addEventListener("click", async (e) => {
@@ -568,6 +608,17 @@
         if (!plan || !["pro", "pro_plus"].includes(plan)) return;
 
         if (btn.getAttribute("data-replymate-cancel") === "true") {
+          if (btn.getAttribute("data-replymate-switch-billing") === "true") {
+            setButtonLoading(btn, true);
+            try {
+              await createPortalSession();
+            } catch (err) {
+              console.error("[ReplyMate Upgrade]", err);
+              const msg = err && err.message ? err.message : "Something went wrong. Please try again.";
+              setButtonError(btn, msg);
+            }
+            return;
+          }
           if (btn.getAttribute("data-replymate-keep") === "true") {
             await handleKeepClick(btn);
           } else {
@@ -640,8 +691,11 @@
     init();
   }
 
+  window.replymateUpdateBillingButton = updateBillingChangeButton;
+
   const langObserver = new MutationObserver(() => {
     updateCancelLabels();
+    updateBillingChangeButton();
     updateCurrentPlanDisplay();
     const plan = document.body.getAttribute("data-replymate-plan");
     const billing = document.body.getAttribute("data-replymate-billing");

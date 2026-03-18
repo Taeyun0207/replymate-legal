@@ -914,9 +914,11 @@
             signInFirst: { en: "Please sign in first to upgrade.", ko: "업그레이드하려면 먼저 로그인해 주세요.", ja: "アップグレードするにはログインしてください。", es: "Inicia sesión primero para actualizar." },
             signInFirstCancel: { en: "Please sign in first to manage your subscription.", ko: "구독 관리를 위해 먼저 로그인해 주세요.", ja: "サブスク管理にはログインしてください。", es: "Inicia sesión para gestionar tu suscripción." },
             activeUntil: { en: "Active until {date}", ko: "{date}까지 이용 가능", ja: "{date}までご利用可能", es: "Activo hasta el {date}" },
-            cancelledPrefix: { en: "Cancelled.", ko: "취소됨.", ja: "解約済み.", es: "Cancelado." },
+            cancelledAccessUntil: { en: "Cancelled — access available until {date}", ko: "취소됨 — {date}까지 이용 가능", ja: "解約済み — {date}までご利用可能", es: "Cancelado — acceso disponible hasta el {date}" },
             renewsOn: { en: "Renews on {date}", ko: "{date}에 갱신", ja: "{date}に更新", es: "Renueva el {date}" },
-            keepUnavailable: { en: "Keep subscription is not available. Contact support.", ko: "구독 유지 기능을 사용할 수 없습니다. 고객센터에 문의하세요.", ja: "継続機能は利用できません。サポートにお問い合わせください。", es: "Mantener suscripción no está disponible. Contacta a soporte." }
+            keepUnavailable: { en: "Keep subscription is not available. Contact support.", ko: "구독 유지 기능을 사용할 수 없습니다. 고객센터에 문의하세요.", ja: "継続機能は利用できません。サポートにお問い合わせください。", es: "Mantener suscripción no está disponible. Contacta a soporte." },
+            switchToAnnual: { en: "Switch to Annual", ko: "연간으로 변경", ja: "年額に変更", es: "Cambiar a Anual" },
+            switchToMonthly: { en: "Switch to Monthly", ko: "월간으로 변경", ja: "月額に変更", es: "Cambiar a Mensual" }
         };
     </script>
     <script src="upgrade-page-checkout.js"></script>
@@ -974,6 +976,7 @@
                 }
                 const cta = container.querySelector('.plan-cta.primary, .plan-cta.secondary');
                 if (cta) cta.setAttribute('data-replymate-billing', type);
+                if (window.replymateUpdateBillingButton) window.replymateUpdateBillingButton();
             });
         });
 
