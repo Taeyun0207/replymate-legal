@@ -573,9 +573,14 @@
     // Standalone cancel buttons
     const standaloneCancelBtns = document.querySelectorAll("[data-replymate-cancel]:not([data-replymate-plan])");
 
-    // Handle post-purchase redirect (?success=1 or ?session_id=...)
+    // Handle post-purchase redirect
+    // Regular upgrade: ?success=1&session_id=cs_xxx
+    // Switch (monthly↔annual): ?success=1&switch=1 (no session_id - backend updates subscription directly)
     const params = new URLSearchParams(location.search);
-    const justPurchased = params.has("success") || params.has("session_id");
+    const success = params.get("success") === "1";
+    const switchDone = params.get("switch") === "1";
+    const sessionId = params.get("session_id"); // present for regular checkout; absent for Switch flow
+    const justPurchased = success || switchDone || !!sessionId;
     if (justPurchased) {
       const cleanUrl = location.pathname + (location.hash || "");
       if (history.replaceState) history.replaceState(null, "", cleanUrl);
