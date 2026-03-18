@@ -247,6 +247,27 @@
     });
   }
 
+  function applyCurrentBillingMarker(currentPlan, billingInterval) {
+    if (!currentPlan || currentPlan === "free" || !billingInterval) return;
+    const label = (LABELS.currentBillingBadge && LABELS.currentBillingBadge[getLang()]) || LABELS.currentBillingBadge?.en || "Current";
+    document.querySelectorAll(".plan-card[data-replymate-plan-type]").forEach((card) => {
+      const type = card.getAttribute("data-replymate-plan-type");
+      if (type !== currentPlan) {
+        card.querySelectorAll(".billing-option.current-plan-billing").forEach((o) => {
+          o.classList.remove("current-plan-billing");
+          o.removeAttribute("data-current-plan-label");
+        });
+        return;
+      }
+      card.querySelectorAll(".billing-option").forEach((opt) => {
+        const optType = opt.getAttribute("data-type");
+        const isCurrent = optType === billingInterval;
+        opt.classList.toggle("current-plan-billing", isCurrent);
+        opt.setAttribute("data-current-plan-label", isCurrent ? label : "");
+      });
+    });
+  }
+
   function applyCurrentPlanDisplay(currentPlan) {
     const badges = document.querySelectorAll(".current-plan-badge");
     badges.forEach((badge) => {
@@ -418,10 +439,13 @@
     (async () => {
       const status = await getSubscriptionStatus();
       if (!status) return;
-      const { plan, cancelAtPeriodEnd } = status;
+      const { plan, cancelAtPeriodEnd, billingInterval } = status;
       applyCancelUI(plan, cancelAtPeriodEnd);
       applyCurrentPlanDisplay(plan);
       applyCurrentPlanCardMarker(plan);
+      applyCurrentBillingMarker(plan, billingInterval);
+      document.body.setAttribute("data-replymate-plan", plan);
+      document.body.setAttribute("data-replymate-billing", billingInterval || "");
     })();
 
     // Click handlers for upgrade buttons (which may become cancel buttons)
@@ -451,22 +475,6 @@
           document.body.appendChild(toast);
           setTimeout(() => toast.remove(), 3000);
           return;
-        }
-
-        // Require billing selection before checkout
-        const card = btn.closest(".plan-card");
-        const billingOptions = card?.querySelector(".billing-options");
-        if (billingOptions) {
-          const selected = billingOptions.querySelector(".billing-option.selected");
-          if (!selected) {
-            const msg = t("chooseBillingFirst") || "Please choose a plan first.";
-            const toast = document.createElement("div");
-            toast.className = "billing-prompt-toast";
-            toast.textContent = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2500);
-            return;
-          }
         }
 
         if (btn.classList.contains("error-state")) {
@@ -510,11 +518,10 @@
   const langObserver = new MutationObserver(() => {
     updateCancelLabels();
     updateCurrentPlanDisplay();
-    const badge = document.querySelector(".current-plan-badge[data-current-plan]");
-    if (badge) {
-      const plan = badge.getAttribute("data-current-plan");
-      if (plan) applyCurrentPlanCardMarker(plan);
-    }
+    const plan = document.body.getAttribute("data-replymate-plan");
+    const billing = document.body.getAttribute("data-replymate-billing");
+    if (plan) applyCurrentPlanCardMarker(plan);
+    if (plan && billing) applyCurrentBillingMarker(plan, billing);
   });
   langObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
 })();

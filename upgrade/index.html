@@ -384,6 +384,23 @@
             padding: 2px 8px;
             border-radius: 100px;
         }
+        .billing-option.current-plan-billing {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.06);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+        }
+        .billing-option.current-plan-billing::after {
+            content: attr(data-current-plan-label);
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.15);
+            padding: 2px 8px;
+            border-radius: 100px;
+        }
         .billing-option {
             display: flex;
             flex-direction: column;
