@@ -22,6 +22,10 @@
  * 4. Cancel button (shown automatically for Pro/Pro+ users, or add standalone):
  *    <button data-replymate-cancel>Cancel subscription</button>
  *
+ * 5. Success banner (optional): Add #replymate-success-banner or [data-replymate-success-banner]
+ *    to show a custom success message after checkout. If absent, a banner is created in .pricing.
+ *    Globals set on success: window.REPLYMATE_CHECKOUT_SUCCESS, window.REPLYMATE_CHECKOUT_SESSION_ID
+ *
  * Backend endpoints:
  * - GET /billing/me → { plan: "free"|"pro"|"pro_plus" }
  * - POST /billing/cancel-subscription → Schedules cancel at period end, returns { currentPeriodEnd, cancelAtPeriodEnd }
@@ -564,6 +568,49 @@
     }
   }
 
+  /**
+   * Checks URL for success params and shows the success banner.
+   * Success when: success=1, switch=1, or session_id present.
+   * Regular upgrade: ?success=1&session_id=cs_xxx
+   * Switch (monthly↔annual): ?success=1&switch=1 (no session_id - backend updates subscription directly)
+   * Sets globals: window.REPLYMATE_CHECKOUT_SUCCESS, window.REPLYMATE_CHECKOUT_SESSION_ID
+   */
+  function checkSuccessAndShowBanner() {
+    const params = new URLSearchParams(location.search);
+    const success = params.get("success") === "1";
+    const switchDone = params.get("switch") === "1";
+    const sessionId = params.get("session_id") || null; // present for regular checkout; absent for Switch flow
+    const isSuccess = success || switchDone || !!sessionId;
+
+    window.REPLYMATE_CHECKOUT_SUCCESS = isSuccess;
+    window.REPLYMATE_CHECKOUT_SESSION_ID = sessionId;
+
+    if (!isSuccess) return;
+
+    const cleanUrl = location.pathname + (location.hash || "");
+    if (history.replaceState) history.replaceState(null, "", cleanUrl);
+
+    const defaultMsg = LABELS.purchaseSuccess?.en || "Thank you! Your plan has been upgraded.";
+    const lang = getLang();
+    const msg = (LABELS.purchaseSuccess && LABELS.purchaseSuccess[lang]) || defaultMsg;
+
+    const existingBanner = document.getElementById("replymate-success-banner") || document.querySelector("[data-replymate-success-banner]");
+    if (existingBanner) {
+      existingBanner.textContent = msg;
+      existingBanner.style.display = "";
+      existingBanner.classList.remove("hidden");
+    } else {
+      document.querySelectorAll(".pricing").forEach((section) => {
+        const sectionLang = section.closest("[id]")?.id || "en";
+        const sectionMsg = (LABELS.purchaseSuccess && LABELS.purchaseSuccess[sectionLang]) || defaultMsg;
+        const banner = document.createElement("div");
+        banner.className = "purchase-success-banner";
+        banner.textContent = sectionMsg;
+        section.insertBefore(banner, section.firstChild);
+      });
+    }
+  }
+
   function init() {
     const upgradeBtns = document.querySelectorAll("[data-replymate-plan]");
     upgradeBtns.forEach((btn) => {
@@ -573,27 +620,7 @@
     // Standalone cancel buttons
     const standaloneCancelBtns = document.querySelectorAll("[data-replymate-cancel]:not([data-replymate-plan])");
 
-    // Handle post-purchase redirect
-    // Regular upgrade: ?success=1&session_id=cs_xxx
-    // Switch (monthly↔annual): ?success=1&switch=1 (no session_id - backend updates subscription directly)
-    const params = new URLSearchParams(location.search);
-    const success = params.get("success") === "1";
-    const switchDone = params.get("switch") === "1";
-    const sessionId = params.get("session_id"); // present for regular checkout; absent for Switch flow
-    const justPurchased = success || switchDone || !!sessionId;
-    if (justPurchased) {
-      const cleanUrl = location.pathname + (location.hash || "");
-      if (history.replaceState) history.replaceState(null, "", cleanUrl);
-      const defaultMsg = LABELS.purchaseSuccess?.en || "Thank you! Your plan has been upgraded.";
-      document.querySelectorAll(".pricing").forEach((section) => {
-        const lang = section.closest("[id]")?.id || "en";
-        const msg = (LABELS.purchaseSuccess && LABELS.purchaseSuccess[lang]) || defaultMsg;
-        const banner = document.createElement("div");
-        banner.className = "purchase-success-banner";
-        banner.textContent = msg;
-        section.insertBefore(banner, section.firstChild);
-      });
-    }
+    checkSuccessAndShowBanner();
 
     // Fetch subscription status, apply Cancel/Keep UI, show current plan, mark current plan card
     const skipSubscriptionUI = /[?&]debug=2/.test(location.search);

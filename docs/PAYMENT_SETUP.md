@@ -101,12 +101,29 @@ The upgrade page uses these on Pro/Pro+ plan cards:
 <button data-replymate-cancel>Cancel subscription</button>
 ```
 
+### Success banner (optional)
+
+After checkout (regular upgrade or Switch monthly↔annual), the page shows a success message. You can either:
+
+1. **Let the script create it** – A banner is automatically inserted into each `.pricing` section.
+2. **Use your own element** – Add an element with `id="replymate-success-banner"` or `data-replymate-success-banner`; the script will populate it and show it on success:
+
+```html
+<div id="replymate-success-banner" class="purchase-success-banner" style="display:none;"></div>
+```
+
+Globals set on success (for optional use, e.g. fetching Stripe session details):
+
+- `window.REPLYMATE_CHECKOUT_SUCCESS` – `true` when `success=1`, `switch=1`, or `session_id` is present
+- `window.REPLYMATE_CHECKOUT_SESSION_ID` – Stripe session ID (present for regular checkout; `null` for Switch flow)
+
 ### Flow
 
-1. User clicks upgrade → if not logged in, Google sign-in opens
-2. After sign-in, checkout session is created
-3. User is redirected to Stripe payment page
-4. After payment, user returns to upgrade page with `?success=1`
+**Regular upgrade:** User clicks upgrade → sign-in (if needed) → Stripe Checkout → returns with `?success=1&session_id=cs_xxx`
+
+**Switch (monthly↔annual):** User selects different billing on current plan → backend updates subscription → returns with `?success=1&switch=1` (no `session_id`)
+
+Both flows trigger the success banner.
 
 **Cancel subscription:** Calls `POST /billing/cancel-subscription`. Schedules cancellation at period end; user keeps access until then. The button then changes to **Keep subscription**; clicking it calls `POST /billing/keep-subscription` to reactivate.
 
