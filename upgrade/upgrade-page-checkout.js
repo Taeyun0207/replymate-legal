@@ -456,12 +456,11 @@
     updateBillingChangeButton();
   }
 
-  /** When user is Pro+, block Pro card upgrade (downgrade) – show "Manage subscription" and open portal instead. */
-  function applyDowngradeBlock(currentPlan, scope) {
+  /** When user is Pro+, block Pro card upgrade (downgrade) – show "Manage subscription" and open portal instead. Apply to all sections. */
+  function applyDowngradeBlock(currentPlan) {
     if (currentPlan !== "pro_plus") return;
     const manageLabel = t("manageSubscription") || "Manage subscription";
-    const root = scope || document;
-    root.querySelectorAll(".plan-card[data-replymate-plan-type=pro] [data-replymate-plan=pro]").forEach((btn) => {
+    document.querySelectorAll(".plan-card[data-replymate-plan-type=pro] [data-replymate-plan=pro]").forEach((btn) => {
       btn.textContent = manageLabel;
       btn.setAttribute("data-replymate-portal-only", "true");
       btn.removeAttribute("data-replymate-cancel");
@@ -473,15 +472,15 @@
     });
   }
 
-  /** Show/hide portal button and apply labels. */
-  function applyPortalButton(currentPlan, scope) {
-    const root = scope || document;
-    root.querySelectorAll("[data-replymate-portal]").forEach((el) => {
+  /** Show/hide portal button and apply labels. Apply to all sections so it works regardless of active language. */
+  function applyPortalButton(currentPlan) {
+    document.querySelectorAll("[data-replymate-portal]").forEach((el) => {
       if (currentPlan && currentPlan !== "free") {
-        el.style.display = "";
+        el.style.setProperty("display", "inline-block", "important");
+        el.style.visibility = "visible";
         el.textContent = t("manageSubscription") || "Manage subscription";
       } else {
-        el.style.display = "none";
+        el.style.setProperty("display", "none", "important");
       }
     });
   }
@@ -699,13 +698,13 @@
       if (!activeSection) return;
       activeSection.style.setProperty("display", "block", "important");
       applyCancelUI(plan, cancelAtPeriodEnd, activeSection);
-      applyDowngradeBlock(plan, activeSection);
+      applyDowngradeBlock(plan);
       applyCurrentPlanDisplay(plan, activeSection);
       applyActiveUntilDisplay(cancelAtPeriodEnd, currentPeriodEnd, plan, activeSection);
       applyCurrentPlanCardMarker(plan, activeSection);
       applyCurrentBillingMarker(plan, billingInterval, activeSection);
       updateBillingChangeButton();
-      applyPortalButton(plan, activeSection);
+      applyPortalButton(plan);
     }
 
     (async () => {
@@ -805,8 +804,12 @@
           return;
         }
 
-        // Pro+ user upgrading to Pro = downgrade; open portal instead
-        const currentPlan = document.body.getAttribute("data-replymate-plan");
+        // Pro+ user upgrading to Pro = downgrade; open portal instead (block Stripe checkout)
+        let currentPlan = document.body.getAttribute("data-replymate-plan");
+        if (!currentPlan) {
+          const status = await getSubscriptionStatus();
+          currentPlan = status?.plan || null;
+        }
         if (currentPlan === "pro_plus" && plan === "pro") {
           setButtonLoading(btn, true);
           try {
@@ -939,8 +942,8 @@
     if (plan && billing) applyCurrentBillingMarker(plan, billing, scope);
     applyActiveUntilDisplay(cancelAtPeriodEnd, currentPeriodEnd, plan, scope);
     if (plan && plan !== "free") applyCancelUI(plan, cancelAtPeriodEnd, scope);
-    applyDowngradeBlock(plan, scope);
-    applyPortalButton(plan, scope);
+    applyDowngradeBlock(plan);
+    applyPortalButton(plan);
   });
   langObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
 })();
