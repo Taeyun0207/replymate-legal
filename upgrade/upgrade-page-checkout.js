@@ -464,6 +464,15 @@
         const billing = btn.getAttribute("data-replymate-billing") || "annual";
         if (!plan || !["pro", "pro_plus"].includes(plan)) return;
 
+        if (btn.getAttribute("data-replymate-cancel") === "true") {
+          if (btn.getAttribute("data-replymate-keep") === "true") {
+            await handleKeepClick(btn);
+          } else {
+            await handleCancelClick(btn);
+          }
+          return;
+        }
+
         // Require billing selection before checkout
         const card = btn.closest(".plan-card");
         const billingOptions = card?.querySelector(".billing-options");
@@ -478,15 +487,6 @@
             setTimeout(() => toast.remove(), 2500);
             return;
           }
-        }
-
-        if (btn.getAttribute("data-replymate-cancel") === "true") {
-          if (btn.getAttribute("data-replymate-keep") === "true") {
-            await handleKeepClick(btn);
-          } else {
-            await handleCancelClick(btn);
-          }
-          return;
         }
 
         if (btn.classList.contains("error-state")) {
