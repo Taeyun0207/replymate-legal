@@ -69,7 +69,13 @@ Open an incognito/private window and try the flow again. This rules out extensio
    - After 500ms: computed `display` and `visibility` of the content
 4. If `en display` shows `none`, something is overriding our CSS
 
-## 9. Inspect the DOM
+## 9. Test: Skip Subscription UI (isolate the cause)
+
+Add `?debug=2` to the URL and sign in: `https://replymateai.app/upgrade/?debug=2`
+
+This disables the subscription UI (Cancel button, plan markers, etc.). If the page **stays visible** after sign-in with `?debug=2`, the subscription UI code is likely causing the blank page. If it still goes blank, the cause is elsewhere (e.g. extension, Supabase, OAuth redirect).
+
+## 10. Inspect the DOM
 
 1. Right-click the page → **Inspect**
 2. In the **Elements** tab, find `<div id="en" class="language-content active">`
@@ -77,5 +83,9 @@ Open an incognito/private window and try the flow again. This rules out extensio
 4. In the **Styles** panel, see if `display: none` is applied (and from which rule)
 
 ---
+
+**403 on `/auth/v1/user`:** This can appear before sign-in. Ensure `replymateai.app` is in Supabase Redirect URLs and that your Supabase project allows the origin. It may not block sign-in if the session comes from the OAuth hash.
+
+**Multiple GoTrueClient:** If you have the ReplyMate Chrome extension installed, it may create a second Supabase client on the page. Test with the extension **disabled** (or in incognito without extensions) to see if the blank page goes away.
 
 **Most likely cause:** Supabase redirect URLs not including `https://replymateai.app/**`. Add it and try again.

@@ -586,7 +586,9 @@
     }
 
     // Fetch subscription status, apply Cancel/Keep UI, show current plan, mark current plan card
+    const skipSubscriptionUI = /[?&]debug=2/.test(location.search);
     (async () => {
+      if (skipSubscriptionUI) return;
       const status = await getSubscriptionStatus();
       if (!status) return;
       const { plan, cancelAtPeriodEnd, billingInterval, currentPeriodEnd } = status;
