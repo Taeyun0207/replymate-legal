@@ -123,17 +123,13 @@
     const billing = billingType || "annual";
     const token = await getAccessToken();
     if (!token) {
-      try {
-        const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-        if (!isLocalhost) {
-          sessionStorage.setItem(PENDING_CHECKOUT_KEY, JSON.stringify({ plan, billing }));
-        }
-        await signInWithGoogle(plan, billing);
-      } catch (err) {
-        sessionStorage.removeItem(PENDING_CHECKOUT_KEY);
-        throw err;
-      }
-      return;
+      const msg = t("signInFirst") || "Please sign in first to upgrade.";
+      const toast = document.createElement("div");
+      toast.className = "billing-prompt-toast";
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+      return false;
     }
 
     let data;
@@ -495,7 +491,11 @@
 
         setButtonLoading(btn, true);
         try {
-          await createCheckout(plan, billing);
+          const result = await createCheckout(plan, billing);
+          if (result === false) {
+            setButtonLoading(btn, false);
+            return;
+          }
         } catch (err) {
           console.error("[ReplyMate Upgrade]", err);
           const msg = err && err.message ? err.message : "Something went wrong. Please try again.";
