@@ -161,6 +161,7 @@ Replace `YOUR_EXTENSION_ID` with your published extension ID (from Chrome Web St
 
 - Ensure your backend implements `POST /billing/keep-subscription` to reactivate a cancelled subscription (set Stripe `cancel_at_period_end` to false).
 - The endpoint should return 200 with optional JSON; empty response is supported.
+- If your backend uses a different path (e.g. `reactivate-subscription`), set `window.REPLYMATE_KEEP_SUBSCRIPTION_PATH = "reactivate-subscription"` before loading the checkout script. The frontend will also try `reactivate-subscription` and `undo-cancel` if `keep-subscription` returns 404.
 
 ---
 

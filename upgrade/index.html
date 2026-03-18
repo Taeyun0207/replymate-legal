@@ -200,6 +200,14 @@
             box-shadow: 0 4px 24px rgba(16, 185, 129, 0.25);
             background: linear-gradient(180deg, rgba(16, 185, 129, 0.04) 0%, #fff 20%);
         }
+        .plan-card.plan-considering {
+            border: 2px solid #f9a8d4;
+            background: #fdf2f8;
+            box-shadow: 0 4px 20px rgba(244, 114, 182, 0.2);
+        }
+        .plan-card.plan-considering:hover {
+            border-color: #f472b6;
+        }
         .plan-card.current-plan .current-plan-badge-card,
         .plan-card.current-plan .featured-badge.current-plan-badge-card {
             position: absolute;
@@ -891,7 +899,7 @@
             planNames: { free: { en: "Standard", ko: "Standard", ja: "Standard", es: "Standard" }, pro: { en: "Pro", ko: "Pro", ja: "Pro", es: "Pro" }, pro_plus: { en: "Pro+", ko: "Pro+", ja: "Pro+", es: "Pro+" } },
             keepSubscription: { en: "Keep subscription", ko: "구독 유지", ja: "継続する", es: "Mantener suscripción" },
             keepSuccess: { en: "Subscription continued.", ko: "구독이 유지되었습니다.", ja: "継続しました。", es: "Suscripción mantenida." },
-            currentPlanBadge: { en: "Current Plan", ko: "현재 플랜", ja: "現在のプラン", es: "Plan actual" },
+            currentPlanBadge: { en: "Current", ko: "현재", ja: "現在", es: "Actual" },
             currentBillingBadge: { en: "Current", ko: "현재", ja: "現在", es: "Actual" },
             chooseBillingFirst: { en: "Please choose Monthly or Annual first.", ko: "먼저 월간 또는 연간을 선택해 주세요.", ja: "月額または年額を選択してください。", es: "Elige Mensual o Anual primero." },
             signInFirst: { en: "Please sign in first to upgrade.", ko: "업그레이드하려면 먼저 로그인해 주세요.", ja: "アップグレードするにはログインしてください。", es: "Inicia sesión primero para actualizar." },

@@ -31,6 +31,7 @@
   "use strict";
 
   const BACKEND = window.REPLYMATE_BACKEND || "https://replymate-backend-bot8.onrender.com";
+  const KEEP_SUBSCRIPTION_PATH = window.REPLYMATE_KEEP_SUBSCRIPTION_PATH || "keep-subscription";
   const SUPABASE_URL = window.REPLYMATE_SUPABASE_URL;
   const SUPABASE_ANON = window.REPLYMATE_SUPABASE_ANON;
   const LABELS = window.REPLYMATE_LABELS || {};
@@ -197,29 +198,40 @@
     const token = await getAccessToken();
     if (!token) return null;
 
-    const res = await fetch(`${BACKEND}/billing/keep-subscription`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({})
-    });
+    const paths = KEEP_SUBSCRIPTION_PATH.startsWith("http")
+      ? [KEEP_SUBSCRIPTION_PATH]
+      : [
+          `${BACKEND}/billing/${KEEP_SUBSCRIPTION_PATH}`,
+          `${BACKEND}/billing/reactivate-subscription`,
+          `${BACKEND}/billing/undo-cancel`
+        ];
 
-    let data = {};
-    const text = await res.text();
-    if (text) {
-      try {
-        data = JSON.parse(text);
-      } catch {
-        if (!res.ok) throw new Error(text || "Failed to keep subscription");
+    let lastError = null;
+    for (const path of paths) {
+      const res = await fetch(path, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({})
+      });
+
+      let data = {};
+      const text = await res.text();
+      if (text) {
+        try {
+          data = JSON.parse(text);
+        } catch {
+          if (!res.ok) lastError = new Error(text || "Failed to keep subscription");
+        }
       }
+      if (res.ok) return data;
+      const msg = data.error || data.message || (res.status === 404 ? "Endpoint not found" : "Failed to keep subscription");
+      lastError = new Error(msg);
+      if (res.status !== 404) break;
     }
-    if (!res.ok) {
-      const msg = data.error || data.message || (res.status === 404 ? "Keep subscription endpoint not found. Please ensure your backend implements POST /billing/keep-subscription." : "Failed to keep subscription");
-      throw new Error(msg);
-    }
-    return data;
+    throw lastError;
   }
 
   /** Cancels subscription at period end. Returns { currentPeriodEnd } on success. */
@@ -524,6 +536,21 @@
       document.body.setAttribute("data-replymate-period-end", currentPeriodEnd || "");
       document.body.setAttribute("data-replymate-cancel-at-period-end", cancelAtPeriodEnd ? "true" : "false");
     })();
+
+    // Plan card click: show pink border when user clicks a different plan (not their current)
+    document.querySelectorAll(".plan-card[data-replymate-plan-type]").forEach((card) => {
+      card.addEventListener("click", (e) => {
+        if (e.target.closest("a, button, .billing-option, input")) return;
+        const type = card.getAttribute("data-replymate-plan-type");
+        const currentPlan = document.body.getAttribute("data-replymate-plan") || "free";
+        if (type === currentPlan || type === "free") {
+          document.querySelectorAll(".plan-card.plan-considering").forEach((c) => c.classList.remove("plan-considering"));
+        } else {
+          document.querySelectorAll(".plan-card.plan-considering").forEach((c) => c.classList.remove("plan-considering"));
+          card.classList.add("plan-considering");
+        }
+      });
+    });
 
     // Click handlers for upgrade buttons (which may become cancel buttons)
     upgradeBtns.forEach((btn) => {
