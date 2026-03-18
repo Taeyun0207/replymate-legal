@@ -36,6 +36,7 @@
 
   const BACKEND = window.REPLYMATE_BACKEND || "https://replymate-backend-bot8.onrender.com";
   const KEEP_SUBSCRIPTION_PATH = window.REPLYMATE_KEEP_SUBSCRIPTION_PATH || "keep-subscription";
+  const SWITCH_VIA_PORTAL = !!window.REPLYMATE_SWITCH_VIA_PORTAL;
   const SUPABASE_URL = window.REPLYMATE_SUPABASE_URL;
   const SUPABASE_ANON = window.REPLYMATE_SUPABASE_ANON;
   const LABELS = window.REPLYMATE_LABELS || {};
@@ -190,11 +191,11 @@
       throw err;
     }
 
-    const url = data.checkoutUrl || data.url || data.checkout_url;
+    const url = data.checkoutUrl || data.url || data.checkout_url || data.redirectUrl || data.redirect_url || data.successUrl || data.success_url;
     if (url && typeof url === "string") {
       window.location.href = url;
     } else {
-      throw new Error(data.error || "No checkout URL received");
+      throw new Error(data.error || data.message || "No checkout URL received");
     }
   }
 
@@ -214,7 +215,7 @@
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || data.message || "Failed to open billing portal");
-    const url = data.url || data.portalUrl || data.portal_url;
+    const url = data.url || data.portalUrl || data.portal_url || data.checkoutUrl || data.redirectUrl;
     if (url && typeof url === "string") {
       window.location.href = url;
     } else {
@@ -672,12 +673,24 @@
 
         if (btn.getAttribute("data-replymate-cancel") === "true") {
           if (btn.getAttribute("data-replymate-switch-billing") === "true") {
-            const card = btn.closest(".plan-card");
-            const selectedOpt = card && card.querySelector(".billing-option input:checked");
-            const targetBilling = selectedOpt ? selectedOpt.closest(".billing-option").getAttribute("data-type") : "annual";
             setButtonLoading(btn, true);
             try {
-              await createCheckout(plan, targetBilling, { subscriptionChange: true });
+              if (SWITCH_VIA_PORTAL) {
+                const result = await createPortalSession();
+                if (result === null) {
+                  setButtonLoading(btn, false);
+                  const toast = document.createElement("div");
+                  toast.className = "billing-prompt-toast";
+                  toast.textContent = "⚠️ " + (t("signInFirst") || "Please sign in first.");
+                  document.body.appendChild(toast);
+                  setTimeout(() => toast.remove(), 3000);
+                }
+              } else {
+                const card = btn.closest(".plan-card");
+                const selectedOpt = card && card.querySelector(".billing-option input:checked");
+                const targetBilling = selectedOpt ? selectedOpt.closest(".billing-option").getAttribute("data-type") : "annual";
+                await createCheckout(plan, targetBilling, { subscriptionChange: true });
+              }
             } catch (err) {
               console.error("[ReplyMate Upgrade]", err);
               const msg = err && err.message ? err.message : "Something went wrong. Please try again.";

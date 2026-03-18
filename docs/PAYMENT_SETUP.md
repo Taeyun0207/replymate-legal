@@ -180,9 +180,17 @@ Replace `YOUR_EXTENSION_ID` with your published extension ID (from Chrome Web St
 - The endpoint should return 200 with optional JSON; empty response is supported.
 - If your backend uses a different path (e.g. `reactivate-subscription`), set `window.REPLYMATE_KEEP_SUBSCRIPTION_PATH = "reactivate-subscription"` before loading the checkout script. The frontend will also try `reactivate-subscription` and `undo-cancel` if `keep-subscription` returns 404.
 
+### Switch button doesn't redirect
+
+If "Switch to Annual" or "Switch to Monthly" does nothing or shows an error:
+
+1. **Use Stripe Customer Portal** – Add `window.REPLYMATE_SWITCH_VIA_PORTAL = true` before the checkout script. The Switch button will then call `POST /billing/create-portal-session` and redirect to Stripe's hosted billing page. Ensure your backend implements this endpoint.
+2. **Check backend response** – For `create-checkout-session` with `subscriptionChange: true`, the backend must return `checkoutUrl` (or `url`, `redirectUrl`, etc.) in the JSON response.
+3. **Console** – Open DevTools (F12) → Console and look for errors when clicking Switch.
+
 ### Changing Monthly ↔ Annual within the same plan
 
-When a user on Pro Monthly selects Pro Annual (or vice versa) in their current plan card, the button changes to **"Switch to Annual"** or **"Switch to Monthly"**. Clicking it sends `POST /billing/create-checkout-session` with `{ targetPlan, billingType, subscriptionChange: true }`.
+When a user on Pro Monthly selects Pro Annual (or vice versa) in their current plan card, the button changes to **"Switch to Annual"** or **"Switch to Monthly"**. By default (with `REPLYMATE_SWITCH_VIA_PORTAL = true`), clicking it opens the Stripe Customer Portal. Otherwise it sends `POST /billing/create-checkout-session` with `{ targetPlan, billingType, subscriptionChange: true }`.
 
 **Backend implementation (recommended):** When `subscriptionChange: true`, update the existing subscription via Stripe API instead of creating a new checkout:
 
@@ -222,7 +230,13 @@ const session = await stripe.billingPortal.sessions.create({
 return res.json({ url: session.url });
 ```
 
-Then configure the frontend to call this endpoint for Switch (instead of create-checkout-session).
+Then enable the frontend to use the Portal for Switch by adding before the checkout script:
+
+```html
+<script>window.REPLYMATE_SWITCH_VIA_PORTAL = true;</script>
+```
+
+This makes the "Switch to Annual/Monthly" button redirect to Stripe's Customer Portal instead of calling `create-checkout-session`.
 
 ---
 
