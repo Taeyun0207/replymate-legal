@@ -58,9 +58,23 @@ Open an incognito/private window and try the flow again. This rules out extensio
 4. Under **Authorized redirect URIs**, ensure:
    - `https://cmmoirdihefyswerkkay.supabase.co/auth/v1/callback`
 
-## 8. Debug Mode (Optional)
+## 8. Debug Mode
 
-Add `?debug=1` to the URL (e.g. `https://replymateai.app/upgrade/?debug=1`) and open the Console. Check for any `[ReplyMate]` logs or errors.
+1. Add `?debug=1` to the URL: `https://replymateai.app/upgrade/?debug=1`
+2. Open DevTools → Console (F12)
+3. Look for `[ReplyMate Debug]` messages – they show:
+   - Whether any language section has the `active` class
+   - Whether `#en` exists
+   - The `lang` URL param (if any)
+   - After 500ms: computed `display` and `visibility` of the content
+4. If `en display` shows `none`, something is overriding our CSS
+
+## 9. Inspect the DOM
+
+1. Right-click the page → **Inspect**
+2. In the **Elements** tab, find `<div id="en" class="language-content active">`
+3. Check if it has `active` in the class list
+4. In the **Styles** panel, see if `display: none` is applied (and from which rule)
 
 ---
 

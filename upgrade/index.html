@@ -894,9 +894,14 @@
 
     <script>
         (function ensureContentVisible() {
-            if (!document.querySelector('.language-content.active')) {
+            var active = document.querySelector('.language-content.active');
+            if (!active) {
                 var en = document.getElementById('en');
                 if (en) en.classList.add('active');
+            }
+            if (location.search.includes('debug=1')) {
+                var dbg = { active: !!document.querySelector('.language-content.active'), en: !!document.getElementById('en'), langParam: new URLSearchParams(location.search).get('lang') };
+                console.log('[ReplyMate Debug]', dbg);
             }
         })();
         window.REPLYMATE_BACKEND = "https://replymate-backend-bot8.onrender.com";
@@ -964,6 +969,19 @@
         const langParam = params.get('lang');
         if (['en','ko','ja','es'].includes(langParam)) setLang(langParam);
         else if (!document.querySelector('.language-content.active')) document.getElementById('en')?.classList.add('active');
+        if (params.get('debug') === '1') {
+            setTimeout(function() {
+                var active = document.querySelector('.language-content.active');
+                if (!active) document.getElementById('en')?.classList.add('active');
+                var en = document.getElementById('en');
+                console.log('[ReplyMate Debug] After init - active:', !!document.querySelector('.language-content.active'), 'en display:', en ? getComputedStyle(en).display : 'N/A', 'en visibility:', en ? getComputedStyle(en).visibility : 'N/A');
+            }, 500);
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!document.querySelector('.language-content.active')) {
+                document.getElementById('en')?.classList.add('active');
+            }
+        });
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.addEventListener('click', () => setLang(btn.dataset.lang));
         });
