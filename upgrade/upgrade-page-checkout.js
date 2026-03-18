@@ -456,6 +456,36 @@
     updateBillingChangeButton();
   }
 
+  /** When user is Pro+, block Pro card upgrade (downgrade) – show "Manage subscription" and open portal instead. */
+  function applyDowngradeBlock(currentPlan, scope) {
+    if (currentPlan !== "pro_plus") return;
+    const manageLabel = t("manageSubscription") || "Manage subscription";
+    const root = scope || document;
+    root.querySelectorAll(".plan-card[data-replymate-plan-type=pro] [data-replymate-plan=pro]").forEach((btn) => {
+      btn.textContent = manageLabel;
+      btn.setAttribute("data-replymate-portal-only", "true");
+      btn.removeAttribute("data-replymate-cancel");
+      btn.removeAttribute("data-replymate-switch-billing");
+      btn.classList.remove("cancel-plan", "primary", "secondary");
+      btn.classList.add("secondary");
+      btn.href = "#";
+      btn.style.pointerEvents = "auto";
+    });
+  }
+
+  /** Show/hide portal button and apply labels. */
+  function applyPortalButton(currentPlan, scope) {
+    const root = scope || document;
+    root.querySelectorAll("[data-replymate-portal]").forEach((el) => {
+      if (currentPlan && currentPlan !== "free") {
+        el.style.display = "";
+        el.textContent = t("manageSubscription") || "Manage subscription";
+      } else {
+        el.style.display = "none";
+      }
+    });
+  }
+
   function updateBillingChangeButton() {
     const currentPlan = document.body.getAttribute("data-replymate-plan");
     const currentBilling = document.body.getAttribute("data-replymate-billing");
@@ -644,6 +674,9 @@
     // Standalone switch buttons: [data-replymate-switch] opens portal (user picks plan in Stripe)
     const switchBtns = document.querySelectorAll("[data-replymate-switch]");
 
+    // Portal button: [data-replymate-portal] – shown below plan cards when user has paid plan
+    const portalBtns = document.querySelectorAll("[data-replymate-portal]");
+
     const params = new URLSearchParams(location.search);
     const justPurchased = params.get("success") === "1" || params.get("switch") === "1" || params.get("session_id");
     checkSuccessAndShowBanner();
@@ -666,11 +699,13 @@
       if (!activeSection) return;
       activeSection.style.setProperty("display", "block", "important");
       applyCancelUI(plan, cancelAtPeriodEnd, activeSection);
+      applyDowngradeBlock(plan, activeSection);
       applyCurrentPlanDisplay(plan, activeSection);
       applyActiveUntilDisplay(cancelAtPeriodEnd, currentPeriodEnd, plan, activeSection);
       applyCurrentPlanCardMarker(plan, activeSection);
       applyCurrentBillingMarker(plan, billingInterval, activeSection);
       updateBillingChangeButton();
+      applyPortalButton(plan, activeSection);
     }
 
     (async () => {
@@ -706,6 +741,26 @@
         e.preventDefault();
         const plan = btn.getAttribute("data-replymate-plan");
         if (!plan || !["pro", "pro_plus"].includes(plan)) return;
+
+        // Pro+ user on Pro card: open portal (block downgrade checkout)
+        if (btn.getAttribute("data-replymate-portal-only") === "true") {
+          setButtonLoading(btn, true);
+          try {
+            const result = await createPortalSession();
+            if (result === null) {
+              setButtonLoading(btn, false);
+              const toast = document.createElement("div");
+              toast.className = "billing-prompt-toast";
+              toast.textContent = "⚠️ " + (t("signInFirst") || "Please sign in first.");
+              document.body.appendChild(toast);
+              setTimeout(() => toast.remove(), 3000);
+            }
+          } catch (err) {
+            console.error("[ReplyMate Upgrade]", err);
+            setButtonError(btn, err?.message || "Something went wrong.");
+          }
+          return;
+        }
 
         if (btn.getAttribute("data-replymate-cancel") === "true") {
           if (btn.getAttribute("data-replymate-switch-billing") === "true") {
@@ -747,6 +802,19 @@
           toast.textContent = "⚠️ " + msg;
           document.body.appendChild(toast);
           setTimeout(() => toast.remove(), 3000);
+          return;
+        }
+
+        // Pro+ user upgrading to Pro = downgrade; open portal instead
+        const currentPlan = document.body.getAttribute("data-replymate-plan");
+        if (currentPlan === "pro_plus" && plan === "pro") {
+          setButtonLoading(btn, true);
+          try {
+            await createPortalSession();
+          } catch (err) {
+            setButtonLoading(btn, false);
+            setButtonError(btn, err?.message || "Something went wrong.");
+          }
           return;
         }
 
@@ -819,6 +887,33 @@
         }
       });
     });
+
+    // Click handlers for [data-replymate-portal] – Manage subscription below plan cards
+    portalBtns.forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        setButtonLoading(btn, true);
+        try {
+          const result = await createPortalSession();
+          if (result === null) {
+            setButtonLoading(btn, false);
+            const toast = document.createElement("div");
+            toast.className = "billing-prompt-toast";
+            toast.textContent = "⚠️ " + (t("signInFirst") || "Please sign in first.");
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+          }
+        } catch (err) {
+          console.error("[ReplyMate Upgrade]", err);
+          setButtonLoading(btn, false);
+          const toast = document.createElement("div");
+          toast.className = "billing-prompt-toast";
+          toast.textContent = "⚠️ " + (err?.message || "Something went wrong.");
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 3000);
+        }
+      });
+    });
   }
 
   if (document.readyState === "loading") {
@@ -844,6 +939,8 @@
     if (plan && billing) applyCurrentBillingMarker(plan, billing, scope);
     applyActiveUntilDisplay(cancelAtPeriodEnd, currentPeriodEnd, plan, scope);
     if (plan && plan !== "free") applyCancelUI(plan, cancelAtPeriodEnd, scope);
+    applyDowngradeBlock(plan, scope);
+    applyPortalButton(plan, scope);
   });
   langObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
 })();

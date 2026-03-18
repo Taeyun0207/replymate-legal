@@ -95,6 +95,8 @@ The upgrade page uses these on Pro/Pro+ plan cards:
 - **Pro+ Annual:** `data-replymate-plan="pro_plus"` `data-replymate-billing="annual"`
 - **Pro+ Monthly:** `data-replymate-plan="pro_plus"` `data-replymate-billing="monthly"`
 
+**Manage subscription:** A "Manage subscription" button appears below the plan cards when the user has Pro or Pro+. It opens the Stripe Customer Portal (change billing, payment method, cancel).
+
 **Cancel subscription:** Shown automatically for Pro/Pro+ users. Or add a standalone button:
 
 ```html
@@ -193,6 +195,10 @@ Replace `YOUR_EXTENSION_ID` with your published extension ID (from Chrome Web St
 - Ensure your backend implements `POST /billing/keep-subscription` to reactivate a cancelled subscription (set Stripe `cancel_at_period_end` to false).
 - The endpoint should return 200 with optional JSON; empty response is supported.
 - If your backend uses a different path (e.g. `reactivate-subscription`), set `window.REPLYMATE_KEEP_SUBSCRIPTION_PATH = "reactivate-subscription"` before loading the checkout script. The frontend will also try `reactivate-subscription` and `undo-cancel` if `keep-subscription` returns 404.
+
+### Pro+ users and Pro plan (downgrade)
+
+Pro+ users cannot buy/redirect to Pro Monthly or Pro Annual from the plan cards. The Pro card's button shows "Manage subscription" and opens the Stripe Customer Portal instead. Downgrades are handled in the portal.
 
 ### Switch button updates wrong plan in database
 
