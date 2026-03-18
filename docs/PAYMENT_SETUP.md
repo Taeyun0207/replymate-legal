@@ -134,7 +134,7 @@ Replace `YOUR_EXTENSION_ID` with your published extension ID (from Chrome Web St
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/billing/create-checkout-session` | POST | Creates Stripe checkout, returns `checkoutUrl` |
-| `/billing/me` | GET | Returns `plan`, `cancelAtPeriodEnd`, and optionally `billingInterval` (`monthly`/`annual`) or `interval` (`month`/`year`) to highlight the current billing option |
+| `/billing/me` | GET | Returns `plan`, `cancelAtPeriodEnd`, and **`billingInterval`** (`monthly`/`annual`) or `interval` (`month`/`year`) — required to show green border on the correct billing option (Monthly/Annual) |
 | `/billing/cancel-subscription` | POST | Schedules cancel at period end, returns `currentPeriodEnd` |
 | `/billing/keep-subscription` | POST | Reactivates subscription (removes cancel-at-period-end) |
 
@@ -151,3 +151,8 @@ Replace `YOUR_EXTENSION_ID` with your published extension ID (from Chrome Web St
 
 - Remove `http://localhost:*` from Supabase Redirect URLs, or
 - Add your production URL and always test from production
+
+### Monthly/Annual option has no green border
+
+- Ensure `/billing/me` returns `billingInterval` (`"monthly"` or `"annual"`) or `interval` (`"month"` or `"year"`).
+- Alternatively, include the full Stripe subscription with `subscription.items.data[0].price.recurring.interval` or a `priceId` containing "monthly"/"annual".

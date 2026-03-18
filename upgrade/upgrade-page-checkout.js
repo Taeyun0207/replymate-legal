@@ -102,19 +102,39 @@
       });
       if (!res.ok) return null;
       const data = await res.json();
-      const plan = (data.plan || data.subscription?.plan || "").toLowerCase();
+      let plan = (data.plan || data.subscription?.plan || "").toLowerCase();
       let planVal = null;
       if (["free", "pro", "pro_plus"].includes(plan)) planVal = plan;
       else if (plan === "proplus") planVal = "pro_plus";
+      else if (plan.includes("pro_plus") || plan.includes("proplus")) {
+        planVal = "pro_plus";
+        plan = plan; // keep full string for interval extraction below
+      } else if (plan.includes("pro")) {
+        planVal = "pro";
+      }
       const cancelAtPeriodEnd = !!(data.cancelAtPeriodEnd ?? data.cancel_at_period_end ?? data.subscription?.cancel_at_period_end);
       let raw = (
         data.billingInterval ?? data.billing_interval ?? data.interval ??
-        data.subscription?.interval ?? data.subscription?.plan?.interval ??
+        data.subscription?.interval ?? data.subscription?.billing_interval ?? data.subscription?.billingInterval ??
+        data.subscription?.plan?.interval ??
         data.subscription?.items?.data?.[0]?.price?.recurring?.interval ??
+        data.subscription?.items?.[0]?.price?.recurring?.interval ??
+        data.subscription?.price?.recurring?.interval ??
+        data.price?.recurring?.interval ??
         ""
       ).toLowerCase();
+      if (!raw && planVal && planVal !== "free") {
+        if (plan.includes("monthly") || plan.includes("month")) raw = "monthly";
+        else if (plan.includes("annual") || plan.includes("yearly") || plan.includes("year")) raw = "annual";
+      }
       if (!raw) {
-        const priceId = (data.subscription?.items?.data?.[0]?.price?.id ?? data.priceId ?? "").toLowerCase();
+        const priceId = (
+          data.subscription?.items?.data?.[0]?.price?.id ??
+          data.subscription?.items?.[0]?.price?.id ??
+          data.subscription?.price?.id ??
+          data.priceId ?? data.price_id ??
+          ""
+        ).toLowerCase();
         if (priceId.includes("monthly") || priceId.includes("month")) raw = "monthly";
         else if (priceId.includes("annual") || priceId.includes("yearly") || priceId.includes("year")) raw = "annual";
       }
