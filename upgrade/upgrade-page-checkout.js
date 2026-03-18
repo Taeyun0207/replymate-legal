@@ -596,12 +596,22 @@
       document.body.setAttribute("data-replymate-billing", billingInterval || "");
       document.body.setAttribute("data-replymate-period-end", currentPeriodEnd || "");
       document.body.setAttribute("data-replymate-cancel-at-period-end", cancelAtPeriodEnd ? "true" : "false");
-      applyCancelUI(plan, cancelAtPeriodEnd);
-      applyCurrentPlanDisplay(plan);
-      applyActiveUntilDisplay(cancelAtPeriodEnd, currentPeriodEnd, plan);
-      applyCurrentPlanCardMarker(plan);
-      applyCurrentBillingMarker(plan, billingInterval);
-      updateBillingChangeButton();
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (!document.querySelector(".language-content.active")) {
+            document.getElementById("en")?.classList.add("active");
+          }
+          applyCancelUI(plan, cancelAtPeriodEnd);
+          applyCurrentPlanDisplay(plan);
+          applyActiveUntilDisplay(cancelAtPeriodEnd, currentPeriodEnd, plan);
+          applyCurrentPlanCardMarker(plan);
+          applyCurrentBillingMarker(plan, billingInterval);
+          updateBillingChangeButton();
+          if (!document.querySelector(".language-content.active")) {
+            document.getElementById("en")?.classList.add("active");
+          }
+        });
+      });
     })();
 
     // Click handlers for upgrade buttons (which may become cancel buttons)
