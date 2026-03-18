@@ -227,7 +227,7 @@
         }
       }
       if (res.ok) return data;
-      const msg = data.error || data.message || (res.status === 404 ? "Endpoint not found" : "Failed to keep subscription");
+      const msg = data.error || data.message || (res.status === 404 ? (t("keepUnavailable") || "Keep subscription is not available. Contact support.") : "Failed to keep subscription");
       lastError = new Error(msg);
       if (res.status !== 404) break;
     }
