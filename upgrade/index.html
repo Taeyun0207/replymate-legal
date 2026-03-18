@@ -961,7 +961,9 @@
             const url = window.REPLYMATE_SUPABASE_URL;
             const anon = window.REPLYMATE_SUPABASE_ANON;
             if (!url || !anon || !window.supabase) return;
-            const supabase = window.supabase.createClient(url, anon);
+            const supabase = window.supabase.createClient(url, anon, {
+                auth: { storageKey: "replymate-auth" }
+            });
             const authBtn = document.getElementById('auth-btn');
             if (!authBtn) return;
             const authLabels = { signIn: { en: 'Sign in', ko: '로그인', ja: 'ログイン', es: 'Iniciar sesión' }, signOut: { en: 'Sign out', ko: '로그아웃', ja: 'ログアウト', es: 'Cerrar sesión' } };

@@ -161,3 +161,17 @@ Replace `YOUR_EXTENSION_ID` with your published extension ID (from Chrome Web St
 
 - Ensure your backend implements `POST /billing/keep-subscription` to reactivate a cancelled subscription (set Stripe `cancel_at_period_end` to false).
 - The endpoint should return 200 with optional JSON; empty response is supported.
+
+---
+
+## 8. Shared Auth: Homepage, Upgrade Page & Extension Popup
+
+The homepage and upgrade page share the same Supabase session via `storageKey: "replymate-auth"`. Signing in on one automatically signs you in on the other (same origin).
+
+**Extension popup sync:** To share auth with the Chrome extension popup:
+
+1. **Content script** on `*://taeyun0207.github.io/replymate-site/*` (and localhost for dev)
+2. On load: read session from `localStorage.getItem("replymate-auth")` (or Supabase’s actual key, e.g. `sb-*-auth-token`) and send to background via `chrome.runtime.sendMessage`
+3. Background stores in `chrome.storage.sync`
+4. Popup reads from `chrome.storage.sync` and initializes Supabase with that session
+5. **Reverse (popup → website):** When user logs in on popup, store session in `chrome.storage`. When user visits the website, content script reads from `chrome.storage` and writes to the page’s `localStorage` so the website sees the session.

@@ -46,7 +46,9 @@
     return;
   }
 
-  const supabase = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON);
+  const supabase = window.supabase?.createClient(SUPABASE_URL, SUPABASE_ANON, {
+    auth: { storageKey: "replymate-auth" }
+  });
   if (!supabase) {
     console.warn("[ReplyMate Upgrade] Supabase not loaded. Add: <script src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'></script>");
     return;
