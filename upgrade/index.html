@@ -108,15 +108,20 @@
         .cta-header:hover { background: #6d28d9; }
 
         .hero {
-            padding: 40px 24px 32px;
+            padding: 48px 24px 40px;
             text-align: center;
-            background: linear-gradient(180deg, #faf5ff 0%, #fff 100%);
+            background: linear-gradient(180deg, #faf5ff 0%, #f5f3ff 40%, #fff 100%);
         }
         .hero h1 {
-            font-size: clamp(1.5rem, 4vw, 2rem);
-            font-weight: 700;
-            margin: 0 0 8px 0;
+            font-size: clamp(1.75rem, 5vw, 2.25rem);
+            font-weight: 800;
+            margin: 0 0 16px 0;
+            letter-spacing: -0.02em;
             color: #1a1a2e;
+            background: linear-gradient(135deg, #1a1a2e 0%, #4c1d95 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         .hero p {
             font-size: 0.95rem;
@@ -124,20 +129,51 @@
             max-width: 540px;
             margin: 0 auto;
         }
-        .hero-tagline {
-            display: block;
+        .hero-value {
+            font-size: 1.1rem;
             color: #475569;
+            font-weight: 600;
+            margin: 0 auto;
+            padding-bottom: 20px;
+            max-width: 100%;
+            line-height: 1.6;
+            white-space: nowrap;
+        }
+        @media (max-width: 700px) {
+            .hero-value { white-space: normal; font-size: 1rem; }
+        }
+        .hero-tagline {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: #64748b;
             font-weight: 500;
             font-size: 0.9rem;
+            padding: 10px 20px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.9);
+            border-radius: 100px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
         }
         .hero-tagline img {
             vertical-align: middle;
-            margin-left: 6px;
         }
-        .hero-tagline .gmail-logo,
-        .hero-tagline .outlook-logo,
-        .hero-tagline .google-logo {
-            height: 20px;
+        .hero-tagline .gmail-logo {
+            height: 22px;
+            width: auto;
+            vertical-align: middle;
+        }
+        .hero-tagline .outlook-logo {
+            height: 26px;
+            width: auto;
+            vertical-align: middle;
+        }
+        .hero-tagline-extra {
+            color: #64748b;
+        }
+        .hero-tagline .globe-logo {
+            height: 26px;
             width: auto;
             vertical-align: middle;
         }
@@ -193,9 +229,25 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.08);
         }
         .plan-card.featured {
-            border-color: #7c3aed;
-            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.2);
+            border: 3px solid #7c3aed;
+            box-shadow: 0 12px 40px rgba(124, 58, 237, 0.25), 0 0 0 1px rgba(124, 58, 237, 0.1);
             position: relative;
+            transform: scale(1.02);
+            background: linear-gradient(180deg, rgba(124, 58, 237, 0.06) 0%, rgba(255,255,255,0.5) 40%, #fff 100%);
+        }
+        .plan-card.featured:hover {
+            box-shadow: 0 16px 48px rgba(124, 58, 237, 0.3), 0 0 0 1px rgba(124, 58, 237, 0.15);
+        }
+        .plan-card.featured .plan-cta.secondary {
+            padding: 16px 28px;
+            font-size: 1.05rem;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
+        }
+        .plan-card.featured .plan-cta.secondary:hover {
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
+        }
+        @media (max-width: 900px) {
+            .plan-card.featured { transform: none; }
         }
         .plan-card.current-plan {
             border: 3px solid #10b981;
@@ -229,18 +281,26 @@
             top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            background: #7c3aed;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
             color: white;
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 4px 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 6px 16px;
             border-radius: 100px;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
         }
         .plan-name {
             font-size: 1.25rem;
             font-weight: 700;
             color: #1a1a2e;
             margin-bottom: 8px;
+        }
+        .plan-price-original {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #94a3b8;
+            text-decoration: line-through;
+            margin-bottom: 4px;
         }
         .plan-price {
             font-size: 2rem;
@@ -256,8 +316,15 @@
         .plan-desc {
             font-size: 0.95rem;
             color: #64748b;
-            margin-bottom: 24px;
+            margin-bottom: 8px;
             min-height: 40px;
+        }
+        .discount-reason {
+            font-size: 0.85rem;
+            color: #7c3aed;
+            font-weight: 600;
+            margin-bottom: 16px;
+            font-style: italic;
         }
         .plan-features {
             list-style: none;
@@ -362,6 +429,12 @@
             border-color: #475569;
             color: #fff !important;
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3);
+        }
+        .footer-tagline {
+            font-size: 1rem;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 12px;
         }
         .plan-cta.error-state {
             background: #fef2f2 !important;
@@ -474,6 +547,12 @@
             border-radius: 100px;
             letter-spacing: 0.02em;
         }
+        .billing-price-original {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            text-decoration: line-through;
+            margin-right: 8px;
+        }
         .billing-price {
             font-size: 1.2rem;
             font-weight: 700;
@@ -546,7 +625,8 @@
     <div id="en" class="language-content active">
     <section class="hero">
         <h1>Choose your plan</h1>
-        <p class="hero-tagline">Works with <img src="../images/gmail64.png" alt="Gmail" class="gmail-logo" width="20" height="20"> <img src="../images/outlook48.png" alt="Outlook" class="outlook-logo"> <img src="../images/google48.png" alt="Google" class="google-logo"></p>
+        <p class="hero-value">Write replies faster, translate instantly, and save time in Gmail & Outlook</p>
+        <p class="hero-tagline">Works with <img src="../images/gmail64.png" alt="Gmail" class="gmail-logo" width="20" height="20"> <img src="../images/outlook48.png" alt="Outlook" class="outlook-logo"> <span class="hero-tagline-extra"><img src="../images/globe.png" alt="Translation everywhere" class="globe-logo"></span></p>
         <div class="current-plan-badge hidden" data-lang="en" data-plan-text></div>
         <div class="active-until hidden" data-lang="en"></div>
     </section>
@@ -555,8 +635,8 @@
         <div class="pricing-grid">
             <div class="plan-card" data-replymate-plan-type="free">
                 <div class="plan-name">Standard</div>
+                <div class="plan-desc">Great for trying ReplyMate</div>
                 <div class="plan-price">$0</div>
-                <div class="plan-desc">AI-powered email replies</div>
                 <ul class="plan-features">
                     <li>25 AI replies per month</li>
                     <li>15 translations per day</li>
@@ -568,9 +648,12 @@
 
             <div class="plan-card" data-replymate-plan-type="pro">
                 <div class="plan-name">Pro</div>
+                <div class="plan-desc">Best for daily email users</div>
+                <div class="plan-price-original">$2.99</div>
                 <div class="plan-price pro-price">$1.99<span>/month</span></div>
-                <div class="plan-desc">For everyday email</div>
+                <div class="discount-reason">Early adopter price · Limited-time offer</div>
                 <ul class="plan-features">
+                    <li class="feature-highlight">4x AI replies + 3x translations</li>
                     <li class="feature-highlight">100 AI replies per month</li>
                     <li class="feature-highlight">50 translations per day</li>
                     <li>All tone options</li>
@@ -583,13 +666,13 @@
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing" value="monthly"> <span class="billing-label">Monthly</span></span>
                         </div>
-                        <span class="billing-price">$1.99 /month</span>
+                        <span class="billing-price-original">$2.99</span><span class="billing-price">$1.99 /month</span>
                     </label>
                     <label class="billing-option" data-plan="pro" data-type="annual">
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing" value="annual"> <span class="billing-label">Annual</span> <span class="billing-badge">2 months free</span></span>
                         </div>
-                        <span class="billing-price">$1.66 /month</span>
+                        <span class="billing-price-original">$2.49</span><span class="billing-price">$1.66 /month</span>
                         <div class="billing-yearly">$19.90 billed yearly</div>
                         <div class="billing-save">Save $3.98 per year</div>
                     </label>
@@ -600,9 +683,12 @@
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
                 <span class="featured-badge">Most Popular</span>
                 <div class="plan-name">Pro+</div>
+                <div class="plan-desc">Best for heavy email and translation</div>
+                <div class="plan-price-original">$6.99</div>
                 <div class="plan-price proplus-price">$4.99<span>/month</span></div>
-                <div class="plan-desc">For power users</div>
+                <div class="discount-reason">Early adopter price · Limited-time offer</div>
                 <ul class="plan-features">
+                    <li class="feature-highlight">10x replies + unlimited translation</li>
                     <li class="feature-highlight">1,000 AI replies per month</li>
                     <li class="feature-highlight">Unlimited translations</li>
                     <li>All tone options</li>
@@ -615,13 +701,13 @@
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing" value="monthly"> <span class="billing-label">Monthly</span></span>
                         </div>
-                        <span class="billing-price">$4.99 /month</span>
+                        <span class="billing-price-original">$6.99</span><span class="billing-price">$4.99 /month</span>
                     </label>
                     <label class="billing-option" data-plan="proplus" data-type="annual">
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing" value="annual"> <span class="billing-label">Annual</span> <span class="billing-badge">2 months free</span></span>
                         </div>
-                        <span class="billing-price">$4.16 /month</span>
+                        <span class="billing-price-original">$5.83</span><span class="billing-price">$4.16 /month</span>
                         <div class="billing-yearly">$49.90 billed yearly</div>
                         <div class="billing-save">Save $9.98 per year</div>
                     </label>
@@ -635,6 +721,7 @@
     </section>
 
     <footer class="footer">
+        <p class="footer-tagline">Reply faster with ReplyMate</p>
         <p><a href="../privacy/index.html">Privacy Policy</a> · <a href="mailto:replymate.support@gmail.com">Contact</a></p>
     </footer>
     </div>
@@ -643,7 +730,8 @@
     <div id="ko" class="language-content">
     <section class="hero">
         <h1>플랜 선택</h1>
-        <p class="hero-tagline"><img src="../images/gmail64.png" alt="Gmail" class="gmail-logo" width="20" height="20"> <img src="../images/outlook48.png" alt="Outlook" class="outlook-logo"> <img src="../images/google48.png" alt="Google" class="google-logo">와 연동</p>
+        <p class="hero-value">Gmail과 Outlook에서 더 빠르게 답장하고, 즉시 번역하며, 시간을 아끼세요.</p>
+        <p class="hero-tagline"><img src="../images/gmail64.png" alt="Gmail" class="gmail-logo" width="20" height="20"> <img src="../images/outlook48.png" alt="Outlook" class="outlook-logo"> 지원 <span class="hero-tagline-extra"><img src="../images/globe.png" alt="Translation everywhere" class="globe-logo"></span></p>
         <div class="current-plan-badge hidden" data-lang="ko" data-plan-text></div>
         <div class="active-until hidden" data-lang="ko"></div>
     </section>
@@ -651,8 +739,8 @@
         <div class="pricing-grid">
             <div class="plan-card" data-replymate-plan-type="free">
                 <div class="plan-name">Standard</div>
+                <div class="plan-desc">ReplyMate 체험에 적합</div>
                 <div class="plan-price">$0</div>
-                <div class="plan-desc">AI 이메일 답장</div>
                 <ul class="plan-features">
                     <li>월 25회 AI 답장</li>
                     <li>일 15회 번역</li>
@@ -663,9 +751,12 @@
             </div>
             <div class="plan-card" data-replymate-plan-type="pro">
                 <div class="plan-name">Pro</div>
+                <div class="plan-desc">일상 이메일 사용자에게 적합</div>
+                <div class="plan-price-original">$2.99</div>
                 <div class="plan-price pro-price">$1.99<span>/월</span></div>
-                <div class="plan-desc">일상 이메일에 적합</div>
+                <div class="discount-reason">얼리어답터 특가 · 한정 기간 할인</div>
                 <ul class="plan-features">
+                    <li class="feature-highlight">AI 답장 4배 · 번역 3배</li>
                     <li class="feature-highlight">월 100회 AI 답장</li>
                     <li class="feature-highlight">일 50회 번역</li>
                     <li>다양한 말투 선택</li>
@@ -678,15 +769,15 @@
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing" value="monthly"> <span class="billing-label">월간</span></span>
                         </div>
-                        <span class="billing-price">$1.99 /월</span>
+                        <span class="billing-price-original">$2.99</span><span class="billing-price">$1.99 /월</span>
                     </label>
                     <label class="billing-option" data-plan="pro" data-type="annual">
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing" value="annual"> <span class="billing-label">연간</span> <span class="billing-badge">2개월 무료</span></span>
                         </div>
-                        <span class="billing-price">$1.66 /월</span>
-                        <div class="billing-yearly">연 $19.90 결제</div>
-                        <div class="billing-save">연 $3.98 절약</div>
+                        <span class="billing-price-original">$2.49</span><span class="billing-price">$1.66 /월</span>
+                        <div class="billing-yearly">연간 $19.90 결제</div>
+                        <div class="billing-save">연간 $3.98 절약</div>
                     </label>
                 </div>
                 <a href="#" class="plan-cta primary" data-replymate-plan="pro" data-replymate-billing="monthly">Pro로 업그레이드</a>
@@ -694,9 +785,12 @@
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
                 <span class="featured-badge">가장 인기</span>
                 <div class="plan-name">Pro+</div>
+                <div class="plan-desc">많은 이메일과 무제한 번역에 적합</div>
+                <div class="plan-price-original">$6.99</div>
                 <div class="plan-price proplus-price">$4.99<span>/월</span></div>
-                <div class="plan-desc">많은 이메일 사용자용</div>
+                <div class="discount-reason">얼리어답터 특가 · 한정 기간 할인</div>
                 <ul class="plan-features">
+                    <li class="feature-highlight">AI 답장 10배 · 무제한 번역</li>
                     <li class="feature-highlight">월 1,000회 AI 답장</li>
                     <li class="feature-highlight">무제한 번역</li>
                     <li>다양한 말투 선택</li>
@@ -709,15 +803,15 @@
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing" value="monthly"> <span class="billing-label">월간</span></span>
                         </div>
-                        <span class="billing-price">$4.99 /월</span>
+                        <span class="billing-price-original">$6.99</span><span class="billing-price">$4.99 /월</span>
                     </label>
                     <label class="billing-option" data-plan="proplus" data-type="annual">
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing" value="annual"> <span class="billing-label">연간</span> <span class="billing-badge">2개월 무료</span></span>
                         </div>
-                        <span class="billing-price">$4.16 /월</span>
-                        <div class="billing-yearly">연 $49.90 결제</div>
-                        <div class="billing-save">연 $9.98 절약</div>
+                        <span class="billing-price-original">$5.83</span><span class="billing-price">$4.16 /월</span>
+                        <div class="billing-yearly">연간 $49.90 결제</div>
+                        <div class="billing-save">연간 $9.98 절약</div>
                     </label>
                 </div>
                 <a href="#" class="plan-cta secondary" data-replymate-plan="pro_plus" data-replymate-billing="monthly">Pro+로 업그레이드</a>
@@ -728,6 +822,7 @@
         </div>
     </section>
     <footer class="footer">
+        <p class="footer-tagline">ReplyMate로 더 빠르게 답장하세요</p>
         <p><a href="../privacy/index.html">개인정보 처리방침</a> · <a href="mailto:replymate.support@gmail.com">문의하기</a></p>
     </footer>
     </div>
@@ -736,7 +831,8 @@
     <div id="ja" class="language-content">
     <section class="hero">
         <h1>プランを選択</h1>
-        <p class="hero-tagline"><img src="../images/gmail64.png" alt="Gmail" class="gmail-logo" width="20" height="20"> <img src="../images/outlook48.png" alt="Outlook" class="outlook-logo"> <img src="../images/google48.png" alt="Google" class="google-logo">と連携</p>
+        <p class="hero-value">GmailとOutlookで返信を速く、翻訳を即座に、時間を節約。</p>
+        <p class="hero-tagline"><img src="../images/gmail64.png" alt="Gmail" class="gmail-logo" width="20" height="20"> <img src="../images/outlook48.png" alt="Outlook" class="outlook-logo">と連携 <span class="hero-tagline-extra"><img src="../images/globe.png" alt="Translation everywhere" class="globe-logo"></span></p>
         <div class="current-plan-badge hidden" data-lang="ja" data-plan-text></div>
         <div class="active-until hidden" data-lang="ja"></div>
     </section>
@@ -744,8 +840,8 @@
         <div class="pricing-grid">
             <div class="plan-card" data-replymate-plan-type="free">
                 <div class="plan-name">Standard</div>
+                <div class="plan-desc">ReplyMateを試すのに最適</div>
                 <div class="plan-price">$0</div>
-                <div class="plan-desc">AIメール返信</div>
                 <ul class="plan-features">
                     <li>月25回のAI返信</li>
                     <li>1日15回の翻訳</li>
@@ -756,9 +852,12 @@
             </div>
             <div class="plan-card" data-replymate-plan-type="pro">
                 <div class="plan-name">Pro</div>
-                <div class="plan-price pro-price">$1.99<span>/月</span></div>
                 <div class="plan-desc">日常のメールに最適</div>
+                <div class="plan-price-original">$2.99</div>
+                <div class="plan-price pro-price">$1.99<span>/月</span></div>
+                <div class="discount-reason">先行者特別価格 · 期間限定</div>
                 <ul class="plan-features">
+                    <li class="feature-highlight">AI返信4倍 · 翻訳3倍</li>
                     <li class="feature-highlight">月100回のAI返信</li>
                     <li class="feature-highlight">1日50回の翻訳</li>
                     <li>トーン選択</li>
@@ -771,14 +870,14 @@
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing-ja" value="monthly"> <span class="billing-label">月額</span></span>
                         </div>
-                        <span class="billing-price">$1.99 /月</span>
+                        <span class="billing-price-original">$2.99</span><span class="billing-price">$1.99 /月</span>
                     </label>
                     <label class="billing-option" data-plan="pro" data-type="annual">
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing-ja" value="annual"> <span class="billing-label">年額</span> <span class="billing-badge">2ヶ月無料</span></span>
                         </div>
-                        <span class="billing-price">$1.66 /月</span>
-                        <div class="billing-yearly">年$19.90一括</div>
+                        <span class="billing-price-original">$2.49</span><span class="billing-price">$1.66 /月</span>
+                        <div class="billing-yearly">年額$19.90お支払い</div>
                         <div class="billing-save">年間$3.98お得</div>
                     </label>
                 </div>
@@ -787,9 +886,12 @@
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
                 <span class="featured-badge">最も人気</span>
                 <div class="plan-name">Pro+</div>
+                <div class="plan-desc">メール多め・翻訳無制限に最適</div>
+                <div class="plan-price-original">$6.99</div>
                 <div class="plan-price proplus-price">$4.99<span>/月</span></div>
-                <div class="plan-desc">メールを多く使う方に</div>
+                <div class="discount-reason">先行者特別価格 · 期間限定</div>
                 <ul class="plan-features">
+                    <li class="feature-highlight">AI返信10倍 · 翻訳無制限</li>
                     <li class="feature-highlight">月1,000回のAI返信</li>
                     <li class="feature-highlight">翻訳無制限</li>
                     <li>トーン選択</li>
@@ -802,14 +904,14 @@
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing-ja" value="monthly"> <span class="billing-label">月額</span></span>
                         </div>
-                        <span class="billing-price">$4.99 /月</span>
+                        <span class="billing-price-original">$6.99</span><span class="billing-price">$4.99 /月</span>
                     </label>
                     <label class="billing-option" data-plan="proplus" data-type="annual">
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing-ja" value="annual"> <span class="billing-label">年額</span> <span class="billing-badge">2ヶ月無料</span></span>
                         </div>
-                        <span class="billing-price">$4.16 /月</span>
-                        <div class="billing-yearly">年$49.90一括</div>
+                        <span class="billing-price-original">$5.83</span><span class="billing-price">$4.16 /月</span>
+                        <div class="billing-yearly">年額$49.90お支払い</div>
                         <div class="billing-save">年間$9.98お得</div>
                     </label>
                 </div>
@@ -821,6 +923,7 @@
         </div>
     </section>
     <footer class="footer">
+        <p class="footer-tagline">ReplyMateでもっと速く返信</p>
         <p><a href="../privacy/index.html">プライバシーポリシー</a> · <a href="mailto:replymate.support@gmail.com">お問い合わせ</a></p>
     </footer>
     </div>
@@ -829,7 +932,8 @@
     <div id="es" class="language-content">
     <section class="hero">
         <h1>Elige tu plan</h1>
-        <p class="hero-tagline">Compatible con <img src="../images/gmail64.png" alt="Gmail" class="gmail-logo" width="20" height="20"> <img src="../images/outlook48.png" alt="Outlook" class="outlook-logo"> <img src="../images/google48.png" alt="Google" class="google-logo"></p>
+        <p class="hero-value">Escribe respuestas más rápido, traduce al instante y ahorra tiempo en Gmail y Outlook.</p>
+        <p class="hero-tagline">Compatible con <img src="../images/gmail64.png" alt="Gmail" class="gmail-logo" width="20" height="20"> <img src="../images/outlook48.png" alt="Outlook" class="outlook-logo"> <span class="hero-tagline-extra"><img src="../images/globe.png" alt="Translation everywhere" class="globe-logo"></span></p>
         <div class="current-plan-badge hidden" data-lang="es" data-plan-text></div>
         <div class="active-until hidden" data-lang="es"></div>
     </section>
@@ -837,8 +941,8 @@
         <div class="pricing-grid">
             <div class="plan-card" data-replymate-plan-type="free">
                 <div class="plan-name">Standard</div>
+                <div class="plan-desc">Ideal para probar ReplyMate</div>
                 <div class="plan-price">$0</div>
-                <div class="plan-desc">Respuestas de email con IA</div>
                 <ul class="plan-features">
                     <li>25 respuestas IA al mes</li>
                     <li>15 traducciones al día</li>
@@ -849,9 +953,12 @@
             </div>
             <div class="plan-card" data-replymate-plan-type="pro">
                 <div class="plan-name">Pro</div>
+                <div class="plan-desc">Ideal para uso diario de email</div>
+                <div class="plan-price-original">$2.99</div>
                 <div class="plan-price pro-price">$1.99<span>/mes</span></div>
-                <div class="plan-desc">Para el día a día</div>
+                <div class="discount-reason">Precio de lanzamiento · Oferta por tiempo limitado</div>
                 <ul class="plan-features">
+                    <li class="feature-highlight">4x respuestas IA + 3x traducciones</li>
                     <li class="feature-highlight">100 respuestas IA al mes</li>
                     <li class="feature-highlight">50 traducciones al día</li>
                     <li>Todos los tonos</li>
@@ -864,13 +971,13 @@
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing-es" value="monthly"> <span class="billing-label">Mensual</span></span>
                         </div>
-                        <span class="billing-price">$1.99 /mes</span>
+                        <span class="billing-price-original">$2.99</span><span class="billing-price">$1.99 /mes</span>
                     </label>
                     <label class="billing-option" data-plan="pro" data-type="annual">
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="pro-billing-es" value="annual"> <span class="billing-label">Anual</span> <span class="billing-badge">2 meses gratis</span></span>
                         </div>
-                        <span class="billing-price">$1.66 /mes</span>
+                        <span class="billing-price-original">$2.49</span><span class="billing-price">$1.66 /mes</span>
                         <div class="billing-yearly">$19.90 facturado al año</div>
                         <div class="billing-save">Ahorra $3.98 al año</div>
                     </label>
@@ -880,9 +987,12 @@
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
                 <span class="featured-badge">Más popular</span>
                 <div class="plan-name">Pro+</div>
+                <div class="plan-desc">Ideal para mucho email y traducción ilimitada</div>
+                <div class="plan-price-original">$6.99</div>
                 <div class="plan-price proplus-price">$4.99<span>/mes</span></div>
-                <div class="plan-desc">Para quienes envían muchos emails</div>
+                <div class="discount-reason">Precio de lanzamiento · Oferta por tiempo limitado</div>
                 <ul class="plan-features">
+                    <li class="feature-highlight">10x respuestas + traducción ilimitada</li>
                     <li class="feature-highlight">1,000 respuestas IA al mes</li>
                     <li class="feature-highlight">Traducciones ilimitadas</li>
                     <li>Todos los tonos</li>
@@ -895,13 +1005,13 @@
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing-es" value="monthly"> <span class="billing-label">Mensual</span></span>
                         </div>
-                        <span class="billing-price">$4.99 /mes</span>
+                        <span class="billing-price-original">$6.99</span><span class="billing-price">$4.99 /mes</span>
                     </label>
                     <label class="billing-option" data-plan="proplus" data-type="annual">
                         <div class="billing-row">
                             <span style="display:flex;align-items:center;gap:10px;"><input type="radio" name="proplus-billing-es" value="annual"> <span class="billing-label">Anual</span> <span class="billing-badge">2 meses gratis</span></span>
                         </div>
-                        <span class="billing-price">$4.16 /mes</span>
+                        <span class="billing-price-original">$5.83</span><span class="billing-price">$4.16 /mes</span>
                         <div class="billing-yearly">$49.90 facturado al año</div>
                         <div class="billing-save">Ahorra $9.98 al año</div>
                     </label>
@@ -914,6 +1024,7 @@
         </div>
     </section>
     <footer class="footer">
+        <p class="footer-tagline">Responde más rápido con ReplyMate</p>
         <p><a href="../privacy/index.html">Política de privacidad</a> · <a href="mailto:replymate.support@gmail.com">Contacto</a></p>
     </footer>
     </div>
@@ -939,28 +1050,28 @@
             window.replymateSupabase = window.supabase.createClient(window.REPLYMATE_SUPABASE_URL, window.REPLYMATE_SUPABASE_ANON, { auth: { storageKey: "replymate-auth" } });
         }
         window.REPLYMATE_LABELS = {
-            cancel: { en: "Cancel subscription", ko: "구독 취소", ja: "サブスクを解約", es: "Cancelar suscripción" },
-            cancelConfirm: { en: "Cancel your subscription? You'll keep access until the end of your billing period.", ko: "구독을 취소하시겠습니까? 결제 기간까지는 계속 이용하실 수 있습니다.", ja: "サブスクを解約しますか？お支払い期間の終了までご利用いただけます。", es: "¿Cancelar la suscripción? Seguirás teniendo acceso hasta el final del período de facturación." },
+            cancel: { en: "Cancel subscription", ko: "구독 취소", ja: "サブスクリプションを解約", es: "Cancelar suscripción" },
+            cancelConfirm: { en: "Cancel your subscription? You'll keep access until the end of your billing period.", ko: "구독을 취소하시겠습니까? 결제 기간 종료까지 이용 가능합니다.", ja: "サブスクリプションを解約しますか？お支払い期間の終了までご利用いただけます。", es: "¿Cancelar la suscripción? Mantendrás el acceso hasta el final del período de facturación." },
             cancelSuccess: { en: "Subscription cancelled. You'll keep access until {date}.", ko: "구독이 취소되었습니다. {date}까지 이용 가능합니다.", ja: "解約完了。{date}までご利用いただけます。", es: "Suscripción cancelada. Mantendrás el acceso hasta el {date}." },
             loading: { en: "Loading…", ko: "로딩 중…", ja: "読み込み中…", es: "Cargando…" },
             tryAgain: { en: "Try again", ko: "다시 시도", ja: "再試行", es: "Reintentar" },
-            purchaseSuccess: { en: "Thanks! Your plan has been upgraded.", ko: "업그레이드가 완료되었습니다.", ja: "アップグレードが完了しました。", es: "¡Listo! Tu plan se ha actualizado." },
+            purchaseSuccess: { en: "Thanks! Your plan has been upgraded.", ko: "감사합니다! 업그레이드가 완료되었습니다.", ja: "ありがとうございます！アップグレードが完了しました。", es: "¡Gracias! Tu plan se ha actualizado." },
             currentPlan: { en: "Your plan: {plan}", ko: "현재 플랜: {plan}", ja: "ご利用中のプラン: {plan}", es: "Tu plan: {plan}" },
             planNames: { free: { en: "Standard", ko: "Standard", ja: "Standard", es: "Standard" }, pro: { en: "Pro", ko: "Pro", ja: "Pro", es: "Pro" }, pro_plus: { en: "Pro+", ko: "Pro+", ja: "Pro+", es: "Pro+" } },
             keepSubscription: { en: "Keep subscription", ko: "구독 유지", ja: "継続する", es: "Mantener suscripción" },
             keepSuccess: { en: "Subscription continued.", ko: "구독이 유지되었습니다.", ja: "継続しました。", es: "Suscripción mantenida." },
             currentPlanBadge: { en: "Current", ko: "현재", ja: "現在", es: "Actual" },
             currentBillingBadge: { en: "Current", ko: "현재", ja: "現在", es: "Actual" },
-            chooseBillingFirst: { en: "Please choose Monthly or Annual first.", ko: "먼저 월간 또는 연간을 선택해 주세요.", ja: "月額または年額を選択してください。", es: "Elige Mensual o Anual primero." },
+            chooseBillingFirst: { en: "Please choose Monthly or Annual first.", ko: "월간 또는 연간을 먼저 선택해 주세요.", ja: "月額または年額を選択してください。", es: "Primero elige Mensual o Anual." },
             signInFirst: { en: "Please sign in first to upgrade.", ko: "업그레이드하려면 먼저 로그인해 주세요.", ja: "アップグレードするにはログインしてください。", es: "Inicia sesión primero para actualizar." },
-            signInFirstCancel: { en: "Please sign in first to manage your subscription.", ko: "구독 관리를 위해 먼저 로그인해 주세요.", ja: "サブスク管理にはログインしてください。", es: "Inicia sesión para gestionar tu suscripción." },
+            signInFirstCancel: { en: "Please sign in first to manage your subscription.", ko: "구독을 관리하려면 먼저 로그인해 주세요.", ja: "サブスクリプションを管理するにはログインしてください。", es: "Inicia sesión para gestionar tu suscripción." },
             activeUntil: { en: "Active until {date}", ko: "{date}까지 이용 가능", ja: "{date}までご利用可能", es: "Activo hasta el {date}" },
-            cancelledAccessUntil: { en: "Cancelled — access available until {date}", ko: "취소됨 — {date}까지 이용 가능", ja: "解約済み — {date}までご利用可能", es: "Cancelado — acceso disponible hasta el {date}" },
+            cancelledAccessUntil: { en: "Cancelled · access available until {date}", ko: "취소됨 · {date}까지 이용 가능", ja: "解約済み · {date}までご利用可能", es: "Cancelado · acceso disponible hasta el {date}" },
             renewsOn: { en: "Renews on {date}", ko: "{date}에 갱신", ja: "{date}に更新", es: "Renueva el {date}" },
-            keepUnavailable: { en: "Keep subscription is not available. Contact support.", ko: "구독 유지 기능을 사용할 수 없습니다. 고객센터에 문의하세요.", ja: "継続機能は利用できません。サポートにお問い合わせください。", es: "Mantener suscripción no está disponible. Contacta a soporte." },
+            keepUnavailable: { en: "Keep subscription is not available. Contact support.", ko: "구독 유지가 불가합니다. 고객센터로 문의해 주세요.", ja: "継続機能をご利用いただけません。サポートまでお問い合わせください。", es: "No se puede mantener la suscripción. Contacta a soporte." },
             switchToAnnual: { en: "Switch to Annual", ko: "연간으로 변경", ja: "年額に変更", es: "Cambiar a Anual" },
             switchToMonthly: { en: "Switch to Monthly", ko: "월간으로 변경", ja: "月額に変更", es: "Cambiar a Mensual" },
-            manageSubscription: { en: "Manage subscription", ko: "구독 관리", ja: "サブスク管理", es: "Gestionar suscripción" }
+            manageSubscription: { en: "Manage subscription", ko: "구독 관리", ja: "サブスクリプション管理", es: "Gestionar suscripción" }
         };
     </script>
     <script src="upgrade-page-checkout.js"></script>
@@ -1026,10 +1137,15 @@
                 this.setAttribute('data-current-label', getCurrentBillingLabel());
                 this.querySelector('input').checked = true;
                 const priceEl = container.querySelector('.plan-price');
+                const origEl = container.querySelector('.plan-price-original');
+                const suffixEl = this.querySelector('.billing-price');
+                const suffix = suffixEl ? (suffixEl.textContent.replace(/^\$[\d.]+/, '').trim() || '/month') : '/month';
                 if (plan === 'pro') {
-                    priceEl.innerHTML = type === 'annual' ? '$1.66<span>/month</span>' : '$1.99<span>/month</span>';
+                    priceEl.innerHTML = (type === 'annual' ? '$1.66' : '$1.99') + '<span> ' + suffix + '</span>';
+                    if (origEl) origEl.textContent = type === 'annual' ? '$2.49' : '$2.99';
                 } else {
-                    priceEl.innerHTML = type === 'annual' ? '$4.16<span>/month</span>' : '$4.99<span>/month</span>';
+                    priceEl.innerHTML = (type === 'annual' ? '$4.16' : '$4.99') + '<span> ' + suffix + '</span>';
+                    if (origEl) origEl.textContent = type === 'annual' ? '$5.83' : '$6.99';
                 }
                 const cta = container.querySelector('.plan-cta.primary, .plan-cta.secondary');
                 if (cta) cta.setAttribute('data-replymate-billing', type);
