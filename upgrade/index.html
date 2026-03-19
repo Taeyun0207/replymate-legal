@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script>
+        (function(){var p=location.pathname;if(/\/index\.html$/i.test(p)){var clean=p.replace(/\/index\.html$/i,'/')||'/';history.replaceState(null,'',location.origin+clean+location.search+location.hash);}})();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReplyMate - Plans & Pricing</title>
     <link rel="icon" type="image/png" sizes="64x64" href="../images/icon64.png">
@@ -677,7 +680,7 @@
                         <div class="billing-save">Save $3.98 per year</div>
                     </label>
                 </div>
-                <a href="#" class="plan-cta primary" data-replymate-plan="pro" data-replymate-billing="monthly">Unlock Pro</a>
+                <a href="#" class="plan-cta primary" data-replymate-plan="pro" data-replymate-billing="monthly">Get Pro</a>
             </div>
 
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
@@ -780,7 +783,7 @@
                         <div class="billing-save">연간 $3.98 절약</div>
                     </label>
                 </div>
-                <a href="#" class="plan-cta primary" data-replymate-plan="pro" data-replymate-billing="monthly">Pro 잠금 해제</a>
+                <a href="#" class="plan-cta primary" data-replymate-plan="pro" data-replymate-billing="monthly">Pro 시작하기</a>
             </div>
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
                 <span class="featured-badge">가장 인기</span>
@@ -881,7 +884,7 @@
                         <div class="billing-save">年間$3.98お得</div>
                     </label>
                 </div>
-                <a href="#" class="plan-cta primary" data-replymate-plan="pro" data-replymate-billing="monthly">Proをアンロック</a>
+                <a href="#" class="plan-cta primary" data-replymate-plan="pro" data-replymate-billing="monthly">Proを始める</a>
             </div>
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
                 <span class="featured-badge">最も人気</span>
@@ -982,7 +985,7 @@
                         <div class="billing-save">Ahorra $3.98 al año</div>
                     </label>
                 </div>
-                <a href="#" class="plan-cta primary" data-replymate-plan="pro" data-replymate-billing="monthly">Desbloquear Pro</a>
+                <a href="#" class="plan-cta primary" data-replymate-plan="pro" data-replymate-billing="monthly">Conseguir Pro</a>
             </div>
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
                 <span class="featured-badge">Más popular</span>
@@ -1045,7 +1048,7 @@
         window.REPLYMATE_SWITCH_VIA_PORTAL = true; // Switch to Annual/Monthly → Stripe Customer Portal
         window.REPLYMATE_SUPABASE_URL = "https://cmmoirdihefyswerkkay.supabase.co";
         window.REPLYMATE_SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtbW9pcmRpaGVmeXN3ZXJra2F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjIzNDUsImV4cCI6MjA4OTAzODM0NX0.gOButw9b4ZrUhVFMBwqf5le2rq7pAeJ0pFhSTKEOcek";
-        window.REPLYMATE_UPGRADE_URL = "https://replymateai.app/upgrade/index.html";
+        window.REPLYMATE_UPGRADE_URL = "https://replymateai.app/upgrade/";
         if (window.supabase && window.REPLYMATE_SUPABASE_URL && window.REPLYMATE_SUPABASE_ANON) {
             window.replymateSupabase = window.supabase.createClient(window.REPLYMATE_SUPABASE_URL, window.REPLYMATE_SUPABASE_ANON, { auth: { storageKey: "replymate-auth" } });
         }

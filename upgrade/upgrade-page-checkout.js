@@ -43,7 +43,7 @@
   const SUPABASE_URL = window.REPLYMATE_SUPABASE_URL;
   const SUPABASE_ANON = window.REPLYMATE_SUPABASE_ANON;
   const LABELS = window.REPLYMATE_LABELS || {};
-  const PRODUCTION_UPGRADE_URL = window.REPLYMATE_UPGRADE_URL || "https://replymateai.app/upgrade/index.html";
+  const PRODUCTION_UPGRADE_URL = window.REPLYMATE_UPGRADE_URL || "https://replymateai.app/upgrade/";
 
   if (!SUPABASE_URL || !SUPABASE_ANON) {
     console.warn("[ReplyMate Upgrade] Missing REPLYMATE_SUPABASE_URL or REPLYMATE_SUPABASE_ANON");
@@ -86,7 +86,7 @@
     const isLocalhost = /localhost|127\.0\.0\.1/i.test(window.location.hostname);
     let redirectTo;
     if (window.REPLYMATE_UPGRADE_URL || isLocalhost) {
-      const base = (window.REPLYMATE_UPGRADE_URL || "https://replymateai.app/upgrade/index.html").split("?")[0];
+      const base = (window.REPLYMATE_UPGRADE_URL || "https://replymateai.app/upgrade/").split("?")[0];
       redirectTo = plan && billing
         ? base + "?replymate_plan=" + encodeURIComponent(plan) + "&replymate_billing=" + encodeURIComponent(billing)
         : base;
