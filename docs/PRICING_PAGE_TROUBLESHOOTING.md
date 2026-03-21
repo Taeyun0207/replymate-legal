@@ -1,4 +1,4 @@
-# Upgrade Page Blank After Sign-In – Troubleshooting
+# Pricing Page Blank After Sign-In – Troubleshooting
 
 If you see a blank page with only "Cancel subscription" after signing in, try these steps:
 
@@ -20,7 +20,7 @@ If you see a blank page with only "Cancel subscription" after signing in, try th
 2. **Site URL:** `https://replymateai.app`
 3. **Redirect URLs** – add all of these:
    - `https://replymateai.app/**`
-   - `https://replymateai.app/upgrade/index.html`
+   - `https://replymateai.app/pricing/index.html`
    - `https://replymateai.app/`
 4. Remove any old `taeyun0207.github.io` URLs if you’ve fully moved to the new domain
 5. Click **Save**
@@ -28,14 +28,14 @@ If you see a blank page with only "Cancel subscription" after signing in, try th
 ## 3. Sign In on the Same Domain
 
 - If you sign in on `taeyun0207.github.io` and then open `replymateai.app`, the session does **not** carry over (different origins).
-- Always sign in directly on `https://replymateai.app/upgrade/`.
+- Always sign in directly on `https://replymateai.app/pricing/`.
 
 ## 4. Check the URL After Sign-In
 
 After Google sign-in, the URL might look like:
 
-- `https://replymateai.app/upgrade/#access_token=...` (normal)
-- `https://replymateai.app/upgrade/?error=...` (OAuth error)
+- `https://replymateai.app/pricing/#access_token=...` (normal)
+- `https://replymateai.app/pricing/?error=...` (OAuth error)
 - `http://localhost:...` (redirect URL misconfigured)
 
 If you land on localhost, fix Supabase redirect URLs (step 2).
@@ -60,7 +60,7 @@ Open an incognito/private window and try the flow again. This rules out extensio
 
 ## 8. Debug Mode
 
-1. Add `?debug=1` to the URL: `https://replymateai.app/upgrade/?debug=1`
+1. Add `?debug=1` to the URL: `https://replymateai.app/pricing/?debug=1`
 2. Open DevTools → Console (F12)
 3. Look for `[ReplyMate Debug]` messages – they show:
    - Whether any language section has the `active` class
@@ -71,7 +71,7 @@ Open an incognito/private window and try the flow again. This rules out extensio
 
 ## 9. Test: Skip Subscription UI (isolate the cause)
 
-Add `?debug=2` to the URL and sign in: `https://replymateai.app/upgrade/?debug=2`
+Add `?debug=2` to the URL and sign in: `https://replymateai.app/pricing/?debug=2`
 
 This disables the subscription UI (Cancel button, plan markers, etc.). If the page **stays visible** after sign-in with `?debug=2`, the subscription UI code is likely causing the blank page. If it still goes blank, the cause is elsewhere (e.g. extension, Supabase, OAuth redirect).
 

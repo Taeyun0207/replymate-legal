@@ -6,7 +6,7 @@
         (function(){var p=location.pathname;if(/\/index\.html$/i.test(p)){var clean=p.replace(/\/index\.html$/i,'/')||'/';history.replaceState(null,'',location.origin+clean+location.search+location.hash);}})();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ReplyMate - Plans & Pricing</title>
+    <title>ReplyMate — Plans &amp; pricing</title>
     <link rel="icon" type="image/png" sizes="64x64" href="../images/icon64.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../images/icon32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../images/icon16.png">
@@ -385,6 +385,90 @@
             margin: 4px -10px;
             border-radius: 8px;
         }
+        .feature-highlight-inner {
+            display: inline-flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            flex: 1;
+            min-width: 0;
+        }
+        .plan-time-save-help {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            cursor: help;
+            position: relative;
+            flex-shrink: 0;
+            line-height: 0;
+            vertical-align: middle;
+        }
+        .plan-time-save-help:focus {
+            outline: 2px solid #7c3aed;
+            outline-offset: 2px;
+            border-radius: 50%;
+        }
+        .plan-time-save-help-icon {
+            display: block;
+            width: 18px;
+            height: 18px;
+        }
+        .plan-time-save-tooltip {
+            position: absolute;
+            z-index: 100;
+            left: 50%;
+            bottom: calc(100% + 10px);
+            transform: translateX(-50%);
+            width: min(288px, 78vw);
+            padding: 10px 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #334155;
+            line-height: 1.45;
+            text-align: left;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.04);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.15s ease, visibility 0.15s ease;
+        }
+        .plan-time-save-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -7px;
+            border: 7px solid transparent;
+            border-top-color: #fff;
+            filter: drop-shadow(0 1px 0 #e2e8f0);
+        }
+        .plan-time-save-help:hover .plan-time-save-tooltip,
+        .plan-time-save-help:focus .plan-time-save-tooltip,
+        .plan-time-save-help:focus-within .plan-time-save-tooltip {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        @media (max-width: 480px) {
+            .plan-time-save-tooltip {
+                left: auto;
+                right: 0;
+                transform: none;
+                width: min(260px, 85vw);
+            }
+            .plan-time-save-tooltip::after {
+                left: auto;
+                right: 12px;
+                margin-left: 0;
+            }
+        }
         .plan-cta {
             display: block;
             text-align: center;
@@ -685,10 +769,10 @@
         <div class="pricing-grid">
             <div class="plan-card" data-replymate-plan-type="free">
                 <div class="plan-name">Free</div>
-                <div class="plan-desc">Best for getting started</div>
+                <div class="plan-desc">Try ReplyMate for free</div>
                 <div class="plan-price">$0</div>
                 <ul class="plan-features">
-                    <li>25 AI replies per month</li>
+                    <li>25 ReplyMate replies per month</li>
                     <li>10 translations per day</li>
                     <li>All tone options</li>
                     <li>Works in Gmail & Outlook</li>
@@ -698,12 +782,13 @@
 
             <div class="plan-card" data-replymate-plan-type="pro">
                 <div class="plan-name plan-name-with-icon"><span class="plan-name-text">Pro</span><svg class="plan-name-icon-svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="#f59e0b" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
-                <div class="plan-desc">Best for casual users</div>
+                <div class="plan-desc">Best for light email users</div>
                 <div class="plan-price-row"><span class="plan-price-original">$2.99</span><div class="plan-price pro-price">$1.99<span>/month</span></div></div>
                 <div class="discount-reason">Early adopter price · Limited-time offer</div>
                 <ul class="plan-features">
-                    <li class="feature-highlight">4x AI replies + 3x translations</li>
-                    <li class="feature-highlight">100 AI replies per month</li>
+                    <li class="feature-highlight"><span class="feature-highlight-inner">Save up to 8 hours per month<button type="button" class="plan-time-save-help" aria-label="Time saved estimate: up to 5 minutes per reply when written by a human; ReplyMate replies in seconds."><svg class="plan-time-save-help-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#e8eaef" stroke="#cbd5e1"/><text x="10" y="14.5" text-anchor="middle" font-size="11.5" font-family="system-ui,-apple-system,sans-serif" font-weight="700" fill="#475569">?</text></svg><span class="plan-time-save-tooltip" role="tooltip">Time saved is estimated assuming up to 5 minutes per human-written reply, while ReplyMate replies take seconds.</span></button></span></li>
+                    <li class="feature-highlight">4x ReplyMate replies + 3x translations</li>
+                    <li class="feature-highlight">100 ReplyMate replies per month</li>
                     <li class="feature-highlight">30 translations per day</li>
                     <li class="feature-highlight">Premium themes & customization</li>
                     <li>All tone options</li>
@@ -733,12 +818,13 @@
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
                 <span class="featured-badge">Most Popular</span>
                 <div class="plan-name plan-name-with-icon"><span class="plan-name-text">Pro+</span><svg class="plan-name-icon-svg plan-name-icon-crown" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path fill="#f59e0b" d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/></svg></div>
-                <div class="plan-desc">Best for daily users</div>
+                <div class="plan-desc">Best for daily email users</div>
                 <div class="plan-price-row"><span class="plan-price-original">$6.99</span><div class="plan-price proplus-price">$4.99<span>/month</span></div></div>
                 <div class="discount-reason">Early adopter price · Limited-time offer</div>
                 <ul class="plan-features">
-                    <li class="feature-highlight">10x replies + unlimited translations</li>
-                    <li class="feature-highlight">1,000 AI replies per month</li>
+                    <li class="feature-highlight"><span class="feature-highlight-inner">Save up to 80 hours per month<button type="button" class="plan-time-save-help" aria-label="Time saved estimate: up to 5 minutes per reply when written by a human; ReplyMate replies in seconds."><svg class="plan-time-save-help-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#e8eaef" stroke="#cbd5e1"/><text x="10" y="14.5" text-anchor="middle" font-size="11.5" font-family="system-ui,-apple-system,sans-serif" font-weight="700" fill="#475569">?</text></svg><span class="plan-time-save-tooltip" role="tooltip">Time saved is estimated assuming up to 5 minutes per human-written reply, while ReplyMate replies take seconds.</span></button></span></li>
+                    <li class="feature-highlight">10x ReplyMate replies + unlimited translations</li>
+                    <li class="feature-highlight">1,000 ReplyMate replies per month</li>
                     <li class="feature-highlight">Unlimited translations</li>
                     <li class="feature-highlight">Premium themes & customization</li>
                     <li>All tone options</li>
@@ -789,10 +875,10 @@
         <div class="pricing-grid">
             <div class="plan-card" data-replymate-plan-type="free">
                 <div class="plan-name">무료</div>
-                <div class="plan-desc">처음 시작하기에 적합</div>
+                <div class="plan-desc">무료로 ReplyMate 체험하기에 적합</div>
                 <div class="plan-price">$0</div>
                 <ul class="plan-features">
-                    <li>월 25회 AI 답장</li>
+                    <li>월 25회 ReplyMate 답장</li>
                     <li>일 10회 번역</li>
                     <li>다양한 말투 선택</li>
                     <li>Gmail 및 Outlook에서 사용</li>
@@ -801,12 +887,13 @@
             </div>
             <div class="plan-card" data-replymate-plan-type="pro">
                 <div class="plan-name plan-name-with-icon"><span class="plan-name-text">Pro</span><svg class="plan-name-icon-svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="#f59e0b" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
-                <div class="plan-desc">가볍게 쓰는 분에게 적합</div>
+                <div class="plan-desc">가벼운 이메일 사용자에게 적합</div>
                 <div class="plan-price-row"><span class="plan-price-original">$2.99</span><div class="plan-price pro-price">$1.99<span>/월</span></div></div>
                 <div class="discount-reason">얼리어답터 특가 · 한정 기간 할인</div>
                 <ul class="plan-features">
-                    <li class="feature-highlight">AI 답장 4배 · 번역 3배</li>
-                    <li class="feature-highlight">월 100회 AI 답장</li>
+                    <li class="feature-highlight"><span class="feature-highlight-inner">월 최대 8시간 절약<button type="button" class="plan-time-save-help" aria-label="절약 시간은 사람이 직접 쓸 때 답장당 최대 5분, ReplyMate 답장은 수 초로 가정해 계산합니다."><svg class="plan-time-save-help-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#e8eaef" stroke="#cbd5e1"/><text x="10" y="14.5" text-anchor="middle" font-size="11.5" font-family="system-ui,-apple-system,sans-serif" font-weight="700" fill="#475569">?</text></svg><span class="plan-time-save-tooltip" role="tooltip">절약 시간은 사람이 직접 작성할 때 답장당 최대 5분, ReplyMate 답장은 수 초로 가정해 계산합니다.</span></button></span></li>
+                    <li class="feature-highlight">ReplyMate 답장 4배 · 번역 3배</li>
+                    <li class="feature-highlight">월 100회 ReplyMate 답장</li>
                     <li class="feature-highlight">일 30회 번역</li>
                     <li class="feature-highlight">프리미엄 테마 · 맞춤 색상</li>
                     <li>다양한 말투 선택</li>
@@ -835,12 +922,13 @@
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
                 <span class="featured-badge">가장 인기</span>
                 <div class="plan-name plan-name-with-icon"><span class="plan-name-text">Pro+</span><svg class="plan-name-icon-svg plan-name-icon-crown" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path fill="#f59e0b" d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/></svg></div>
-                <div class="plan-desc">매일 이메일을 많이 쓰는 분에게 적합</div>
+                <div class="plan-desc">매일 이메일을 쓰는 사용자에게 적합</div>
                 <div class="plan-price-row"><span class="plan-price-original">$6.99</span><div class="plan-price proplus-price">$4.99<span>/월</span></div></div>
                 <div class="discount-reason">얼리어답터 특가 · 한정 기간 할인</div>
                 <ul class="plan-features">
-                    <li class="feature-highlight">AI 답장 10배 · 무제한 번역</li>
-                    <li class="feature-highlight">월 1,000회 AI 답장</li>
+                    <li class="feature-highlight"><span class="feature-highlight-inner">월 최대 80시간 절약<button type="button" class="plan-time-save-help" aria-label="절약 시간은 사람이 직접 쓸 때 답장당 최대 5분, ReplyMate 답장은 수 초로 가정해 계산합니다."><svg class="plan-time-save-help-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#e8eaef" stroke="#cbd5e1"/><text x="10" y="14.5" text-anchor="middle" font-size="11.5" font-family="system-ui,-apple-system,sans-serif" font-weight="700" fill="#475569">?</text></svg><span class="plan-time-save-tooltip" role="tooltip">절약 시간은 사람이 직접 작성할 때 답장당 최대 5분, ReplyMate 답장은 수 초로 가정해 계산합니다.</span></button></span></li>
+                    <li class="feature-highlight">ReplyMate 답장 10배 · 무제한 번역</li>
+                    <li class="feature-highlight">월 1,000회 ReplyMate 답장</li>
                     <li class="feature-highlight">무제한 번역</li>
                     <li class="feature-highlight">프리미엄 테마 · 맞춤 색상</li>
                     <li>다양한 말투 선택</li>
@@ -890,10 +978,10 @@
         <div class="pricing-grid">
             <div class="plan-card" data-replymate-plan-type="free">
                 <div class="plan-name">無料</div>
-                <div class="plan-desc">はじめるのに最適</div>
+                <div class="plan-desc">ReplyMateを無料で試すのに最適</div>
                 <div class="plan-price">$0</div>
                 <ul class="plan-features">
-                    <li>月25回のAI返信</li>
+                    <li>月25回のReplyMate返信</li>
                     <li>1日10回の翻訳</li>
                     <li>トーン選択</li>
                     <li>GmailおよびOutlookで利用</li>
@@ -902,12 +990,13 @@
             </div>
             <div class="plan-card" data-replymate-plan-type="pro">
                 <div class="plan-name plan-name-with-icon"><span class="plan-name-text">Pro</span><svg class="plan-name-icon-svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="#f59e0b" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
-                <div class="plan-desc">カジュアルな利用に最適</div>
+                <div class="plan-desc">軽めのメール利用に最適</div>
                 <div class="plan-price-row"><span class="plan-price-original">$2.99</span><div class="plan-price pro-price">$1.99<span>/月</span></div></div>
                 <div class="discount-reason">先行者特別価格 · 期間限定</div>
                 <ul class="plan-features">
-                    <li class="feature-highlight">AI返信4倍 · 翻訳3倍</li>
-                    <li class="feature-highlight">月100回のAI返信</li>
+                    <li class="feature-highlight"><span class="feature-highlight-inner">月に最大8時間の節約<button type="button" class="plan-time-save-help" aria-label="節約時間は、手入力なら返信あたり最大5分、ReplyMate返信は数秒と仮定して算出しています。"><svg class="plan-time-save-help-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#e8eaef" stroke="#cbd5e1"/><text x="10" y="14.5" text-anchor="middle" font-size="11.5" font-family="system-ui,-apple-system,sans-serif" font-weight="700" fill="#475569">?</text></svg><span class="plan-time-save-tooltip" role="tooltip">節約時間は、手入力なら返信あたり最大5分、ReplyMate返信は数秒と仮定して算出しています。</span></button></span></li>
+                    <li class="feature-highlight">ReplyMate返信4倍 · 翻訳3倍</li>
+                    <li class="feature-highlight">月100回のReplyMate返信</li>
                     <li class="feature-highlight">1日30回の翻訳</li>
                     <li class="feature-highlight">プレミアムテーマ・カスタマイズ</li>
                     <li>トーン選択</li>
@@ -936,12 +1025,13 @@
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
                 <span class="featured-badge">最も人気</span>
                 <div class="plan-name plan-name-with-icon"><span class="plan-name-text">Pro+</span><svg class="plan-name-icon-svg plan-name-icon-crown" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path fill="#f59e0b" d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/></svg></div>
-                <div class="plan-desc">毎日メールをする人に最適</div>
+                <div class="plan-desc">毎日メールを使う方に最適</div>
                 <div class="plan-price-row"><span class="plan-price-original">$6.99</span><div class="plan-price proplus-price">$4.99<span>/月</span></div></div>
                 <div class="discount-reason">先行者特別価格 · 期間限定</div>
                 <ul class="plan-features">
-                    <li class="feature-highlight">無料比10倍のAI返信 · 翻訳無制限</li>
-                    <li class="feature-highlight">月1,000回のAI返信</li>
+                    <li class="feature-highlight"><span class="feature-highlight-inner">月に最大80時間の節約<button type="button" class="plan-time-save-help" aria-label="節約時間は、手入力なら返信あたり最大5分、ReplyMate返信は数秒と仮定して算出しています。"><svg class="plan-time-save-help-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#e8eaef" stroke="#cbd5e1"/><text x="10" y="14.5" text-anchor="middle" font-size="11.5" font-family="system-ui,-apple-system,sans-serif" font-weight="700" fill="#475569">?</text></svg><span class="plan-time-save-tooltip" role="tooltip">節約時間は、手入力なら返信あたり最大5分、ReplyMate返信は数秒と仮定して算出しています。</span></button></span></li>
+                    <li class="feature-highlight">無料比10倍のReplyMate返信 · 翻訳無制限</li>
+                    <li class="feature-highlight">月1,000回のReplyMate返信</li>
                     <li class="feature-highlight">翻訳無制限</li>
                     <li class="feature-highlight">プレミアムテーマ・カスタマイズ</li>
                     <li>トーン選択</li>
@@ -991,10 +1081,10 @@
         <div class="pricing-grid">
             <div class="plan-card" data-replymate-plan-type="free">
                 <div class="plan-name">Gratis</div>
-                <div class="plan-desc">Ideal para empezar</div>
+                <div class="plan-desc">Prueba ReplyMate gratis</div>
                 <div class="plan-price">$0</div>
                 <ul class="plan-features">
-                    <li>25 respuestas IA al mes</li>
+                    <li>25 respuestas ReplyMate al mes</li>
                     <li>10 traducciones al día</li>
                     <li>Todos los tonos</li>
                     <li>Funciona en Gmail y Outlook</li>
@@ -1003,12 +1093,13 @@
             </div>
             <div class="plan-card" data-replymate-plan-type="pro">
                 <div class="plan-name plan-name-with-icon"><span class="plan-name-text">Pro</span><svg class="plan-name-icon-svg" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="#f59e0b" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></div>
-                <div class="plan-desc">Ideal para uso casual</div>
+                <div class="plan-desc">Ideal para uso ligero del email</div>
                 <div class="plan-price-row"><span class="plan-price-original">$2.99</span><div class="plan-price pro-price">$1.99<span>/mes</span></div></div>
                 <div class="discount-reason">Precio de lanzamiento · Oferta por tiempo limitado</div>
                 <ul class="plan-features">
-                    <li class="feature-highlight">4x respuestas IA + 3x traducciones</li>
-                    <li class="feature-highlight">100 respuestas IA al mes</li>
+                    <li class="feature-highlight"><span class="feature-highlight-inner">Ahorra hasta 8 horas al mes<button type="button" class="plan-time-save-help" aria-label="El cálculo supone hasta 5 minutos por respuesta si la escribes tú, y segundos con ReplyMate."><svg class="plan-time-save-help-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#e8eaef" stroke="#cbd5e1"/><text x="10" y="14.5" text-anchor="middle" font-size="11.5" font-family="system-ui,-apple-system,sans-serif" font-weight="700" fill="#475569">?</text></svg><span class="plan-time-save-tooltip" role="tooltip">El cálculo supone hasta 5 minutos por respuesta si la escribes tú, y segundos con ReplyMate.</span></button></span></li>
+                    <li class="feature-highlight">4x respuestas ReplyMate + 3x traducciones</li>
+                    <li class="feature-highlight">100 respuestas ReplyMate al mes</li>
                     <li class="feature-highlight">30 traducciones al día</li>
                     <li class="feature-highlight">Temas premium y personalización</li>
                     <li>Todos los tonos</li>
@@ -1037,12 +1128,13 @@
             <div class="plan-card featured" data-replymate-plan-type="pro_plus">
                 <span class="featured-badge">Más popular</span>
                 <div class="plan-name plan-name-with-icon"><span class="plan-name-text">Pro+</span><svg class="plan-name-icon-svg plan-name-icon-crown" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path fill="#f59e0b" d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/></svg></div>
-                <div class="plan-desc">Ideal para uso diario</div>
+                <div class="plan-desc">Ideal para usuarios de email diarios</div>
                 <div class="plan-price-row"><span class="plan-price-original">$6.99</span><div class="plan-price proplus-price">$4.99<span>/mes</span></div></div>
                 <div class="discount-reason">Precio de lanzamiento · Oferta por tiempo limitado</div>
                 <ul class="plan-features">
-                    <li class="feature-highlight">10x respuestas IA + traducción ilimitada</li>
-                    <li class="feature-highlight">1,000 respuestas IA al mes</li>
+                    <li class="feature-highlight"><span class="feature-highlight-inner">Ahorra hasta 80 horas al mes<button type="button" class="plan-time-save-help" aria-label="El cálculo supone hasta 5 minutos por respuesta si la escribes tú, y segundos con ReplyMate."><svg class="plan-time-save-help-icon" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#e8eaef" stroke="#cbd5e1"/><text x="10" y="14.5" text-anchor="middle" font-size="11.5" font-family="system-ui,-apple-system,sans-serif" font-weight="700" fill="#475569">?</text></svg><span class="plan-time-save-tooltip" role="tooltip">El cálculo supone hasta 5 minutos por respuesta si la escribes tú, y segundos con ReplyMate.</span></button></span></li>
+                    <li class="feature-highlight">10x respuestas ReplyMate + traducción ilimitada</li>
+                    <li class="feature-highlight">1,000 respuestas ReplyMate al mes</li>
                     <li class="feature-highlight">Traducciones ilimitadas</li>
                     <li class="feature-highlight">Temas premium y personalización</li>
                     <li>Todos los tonos</li>
@@ -1095,7 +1187,7 @@
         window.REPLYMATE_SWITCH_VIA_PORTAL = true; // Switch to Annual/Monthly → Stripe Customer Portal
         window.REPLYMATE_SUPABASE_URL = "https://cmmoirdihefyswerkkay.supabase.co";
         window.REPLYMATE_SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtbW9pcmRpaGVmeXN3ZXJra2F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NjIzNDUsImV4cCI6MjA4OTAzODM0NX0.gOButw9b4ZrUhVFMBwqf5le2rq7pAeJ0pFhSTKEOcek";
-        window.REPLYMATE_UPGRADE_URL = "https://replymateai.app/upgrade/";
+        window.REPLYMATE_UPGRADE_URL = "https://replymateai.app/pricing/";
         /** Set live: true when published. Edge → edgeAddonsUrl; Chrome & others → Chrome Web Store. */
         window.REPLYMATE_STORE = {
             live: false,
@@ -1119,7 +1211,7 @@
             currentPlanBadge: { en: "Current", ko: "현재", ja: "現在", es: "Actual" },
             currentBillingBadge: { en: "Current", ko: "현재", ja: "現在", es: "Actual" },
             chooseBillingFirst: { en: "Please choose Monthly or Annual first.", ko: "월간 또는 연간을 먼저 선택해 주세요.", ja: "月額または年額を選択してください。", es: "Primero elige Mensual o Anual." },
-            signInFirst: { en: "Please sign in first to upgrade.", ko: "업그레이드하려면 먼저 로그인해 주세요.", ja: "アップグレードするにはログインしてください。", es: "Inicia sesión primero para actualizar." },
+            signInFirst: { en: "Please sign in first to choose a plan.", ko: "플랜을 선택하려면 먼저 로그인해 주세요.", ja: "プランを選ぶにはログインしてください。", es: "Inicia sesión para ver los precios y elegir un plan." },
             signInFirstCancel: { en: "Please sign in first to manage your subscription.", ko: "구독을 관리하려면 먼저 로그인해 주세요.", ja: "サブスクリプションを管理するにはログインしてください。", es: "Inicia sesión para gestionar tu suscripción." },
             activeUntil: { en: "Active until {date}", ko: "{date}까지 이용 가능", ja: "{date}までご利用可能", es: "Activo hasta el {date}" },
             cancelledAccessUntil: { en: "Cancelled · access available until {date}", ko: "취소됨 · {date}까지 이용 가능", ja: "解約済み · {date}までご利用可能", es: "Cancelado · acceso disponible hasta el {date}" },
@@ -1131,7 +1223,7 @@
         };
     </script>
     <script src="../js/replymate-store.js"></script>
-    <script src="upgrade-page-checkout.js"></script>
+    <script src="pricing-page-checkout.js"></script>
     <script>
         const navLabels = {
             en: { cta: 'Coming in April' },

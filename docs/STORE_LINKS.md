@@ -1,6 +1,6 @@
 # Extension store links (Chrome vs Edge)
 
-The site uses `js/replymate-store.js` with `window.REPLYMATE_STORE` (see `index.html` and `upgrade/index.html`).
+The site uses `js/replymate-store.js` with `window.REPLYMATE_STORE` (see `index.html` and `pricing/index.html`).
 
 ## At launch
 

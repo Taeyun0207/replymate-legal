@@ -5,7 +5,7 @@
     <script>(function(){var p=location.pathname;if(/\/index\.html$/i.test(p)){var clean=p.replace(/\/index\.html$/i,'/')||'/';history.replaceState(null,'',location.origin+clean+location.search+location.hash);}})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="ReplyMate helps you write replies faster in Gmail and Outlook—save hours every week. Browser extension coming in April.">
-    <title>ReplyMate — AI replies in Gmail &amp; Outlook</title>
+    <title>ReplyMate — Replies in Gmail &amp; Outlook</title>
     <link rel="icon" type="image/png" sizes="64x64" href="images/icon64.png">
     <link rel="icon" type="image/png" sizes="32x32" href="images/icon32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/icon16.png">
@@ -165,13 +165,72 @@
             text-decoration: none;
         }
         .header-upgrade {
-            color: #64748b;
-            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
             font-size: 0.95rem;
-            transition: color 0.2s;
+            font-weight: 600;
+            color: #5b21b6;
+            text-decoration: none;
+            background: linear-gradient(180deg, #faf5ff 0%, #f5f3ff 100%);
+            border: 1px solid rgba(124, 58, 237, 0.5);
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(124, 58, 237, 0.12);
+            transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.15s;
         }
         .header-upgrade:hover {
-            color: #7c3aed;
+            color: #4c1d95;
+            background: #ede9fe;
+            border-color: #7c3aed;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.22);
+            transform: translateY(-1px);
+        }
+        .footer-upgrade {
+            font-weight: 600;
+            color: #7c3aed !important;
+        }
+        .footer-upgrade:hover {
+            color: #5b21b6 !important;
+        }
+        .hero-cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .hero-pricing-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 26px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #5b21b6;
+            background: #fff;
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: background 0.2s, border-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
+            box-shadow: 0 2px 10px rgba(124, 58, 237, 0.12);
+        }
+        .hero-pricing-btn:hover {
+            background: #faf5ff;
+            border-color: #6d28d9;
+            color: #4c1d95;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.22);
+        }
+        @media (max-width: 520px) {
+            .hero-cta-row {
+                flex-direction: column;
+                width: 100%;
+            }
+            .hero-cta-row .hero-cta,
+            .hero-cta-row .hero-pricing-btn {
+                width: 100%;
+                max-width: 340px;
+            }
         }
         .btn-signin {
             background: #f1f5f9;
@@ -590,18 +649,18 @@
                 <img src="images/icon128.png" alt="ReplyMate" width="40" height="40">
                 ReplyMate
             </a>
-            <a href="upgrade/index.html" class="header-plan-pill hidden" id="header-plan-pill" title="">
+            <a href="pricing/index.html" class="header-plan-pill hidden" id="header-plan-pill" title="">
                 <span class="header-plan-pill-label" id="header-plan-pill-label">Plan</span>
                 <span class="header-plan-pill-name" id="header-plan-pill-name">—</span>
             </a>
         </div>
         <div class="header-right">
             <button class="btn-signin" id="auth-btn" style="display:none">Sign in</button>
-            <a href="upgrade/index.html" class="header-upgrade" id="header-upgrade">Upgrade</a>
             <button class="lang-btn active" data-lang="en">EN</button>
             <button class="lang-btn" data-lang="ko">한</button>
             <button class="lang-btn" data-lang="ja">日</button>
             <button class="lang-btn" data-lang="es">ES</button>
+            <a href="pricing/index.html" class="header-upgrade" id="header-upgrade">Pricing</a>
             <a href="#" class="cta-header cta-coming-soon" id="header-coming-soon" data-replymate-store aria-disabled="true">Coming in April</a>
         </div>
     </header>
@@ -623,7 +682,10 @@
                 </p>
             </div>
             <div class="hero-cta-wrap">
-                <a href="#" class="hero-cta cta-coming-soon" data-replymate-store aria-disabled="true">Coming in April</a>
+                <div class="hero-cta-row">
+                    <a href="#" class="hero-cta cta-coming-soon" data-replymate-store aria-disabled="true">Coming in April</a>
+                    <a href="pricing/index.html" class="hero-pricing-btn">View plans</a>
+                </div>
                 <p class="hero-cta-note">Browser extension — launching in April</p>
             </div>
             <div class="demo-video-section">
@@ -645,7 +707,7 @@
                         <div class="preview">Thanks for the call today. Please find the summary attached...</div>
                     </div>
                     <div class="mockup-reply">
-                        <span>AI Reply</span> — Draft appears here
+                        <span>ReplyMate</span> — Draft appears here
                     </div>
                 </div>
             </div>
@@ -672,7 +734,7 @@
                 <div class="feature-card">
                     <div class="feature-icon">📧</div>
                     <h3>Gmail & Outlook in the browser</h3>
-                    <p>It runs where your mail lives—so you’re not copying from a separate AI window.</p>
+                    <p>It runs where your mail lives—so you’re not copying from another window.</p>
                 </div>
             </div>
         </section>
@@ -692,7 +754,7 @@
                 </div>
                 <div class="step">
                     <div class="step-num">3</div>
-                    <h3>Tap AI Reply</h3>
+                    <h3>Tap ReplyMate</h3>
                     <p>On the message you’re answering. Adjust tone, then generate.</p>
                 </div>
                 <div class="step">
@@ -713,7 +775,7 @@
         </section>
         <footer class="footer">
             <div class="footer-links">
-                <a href="upgrade/index.html" class="footer-upgrade">Upgrade</a>
+                <a href="pricing/index.html" class="footer-upgrade">Pricing</a>
                 <a href="privacy/index.html">Privacy Policy</a>
                 <a href="mailto:replymate.support@gmail.com">Contact</a>
             </div>
@@ -738,7 +800,10 @@
                 </p>
             </div>
             <div class="hero-cta-wrap">
-                <a href="#" class="hero-cta cta-coming-soon" data-replymate-store aria-disabled="true">4월 출시 예정</a>
+                <div class="hero-cta-row">
+                    <a href="#" class="hero-cta cta-coming-soon" data-replymate-store aria-disabled="true">4월 출시 예정</a>
+                    <a href="pricing/index.html?lang=ko" class="hero-pricing-btn">요금제 보기</a>
+                </div>
                 <p class="hero-cta-note">브라우저 확장 — 4월 출시 예정</p>
             </div>
             <div class="demo-video-section">
@@ -761,7 +826,7 @@
                         <div class="preview">오늘 통화 감사합니다. 요약본 첨부드립니다...</div>
                     </div>
                     <div class="mockup-reply">
-                        <span>AI Reply</span> — 여기에 초안이 뜹니다
+                        <span>ReplyMate</span> — 여기에 초안이 뜹니다
                     </div>
                 </div>
             </div>
@@ -808,7 +873,7 @@
                 </div>
                 <div class="step">
                     <div class="step-num">3</div>
-                    <h3>AI Reply</h3>
+                    <h3>ReplyMate</h3>
                     <p>답장할 메일에서 누르고, 말투를 정한 뒤 생성해요.</p>
                 </div>
                 <div class="step">
@@ -829,7 +894,7 @@
         </section>
         <footer class="footer">
             <div class="footer-links">
-                <a href="upgrade/index.html?lang=ko" class="footer-upgrade">업그레이드</a>
+                <a href="pricing/index.html?lang=ko" class="footer-upgrade">요금제</a>
                 <a href="privacy/index.html">개인정보 처리방침</a>
                 <a href="mailto:replymate.support@gmail.com">문의하기</a>
             </div>
@@ -854,7 +919,10 @@
                 </p>
             </div>
             <div class="hero-cta-wrap">
-                <a href="#" class="hero-cta cta-coming-soon" data-replymate-store aria-disabled="true">4月公開予定</a>
+                <div class="hero-cta-row">
+                    <a href="#" class="hero-cta cta-coming-soon" data-replymate-store aria-disabled="true">4月公開予定</a>
+                    <a href="pricing/index.html?lang=ja" class="hero-pricing-btn">プランを見る</a>
+                </div>
                 <p class="hero-cta-note">ブラウザ拡張機能 — 4月公開予定</p>
             </div>
             <div class="demo-video-section">
@@ -877,7 +945,7 @@
                         <div class="preview">本日はお電話ありがとうございました。議事録を添付いたします...</div>
                     </div>
                     <div class="mockup-reply">
-                        <span>AI Reply</span> — ここにたたき台が出ます
+                        <span>ReplyMate</span> — ここにたたき台が出ます
                     </div>
                 </div>
             </div>
@@ -924,7 +992,7 @@
                 </div>
                 <div class="step">
                     <div class="step-num">3</div>
-                    <h3>AI Reply</h3>
+                    <h3>ReplyMate</h3>
                     <p>返信したいメールでタップし、トーンを決めて生成。</p>
                 </div>
                 <div class="step">
@@ -945,7 +1013,7 @@
         </section>
         <footer class="footer">
             <div class="footer-links">
-                <a href="upgrade/index.html?lang=ja" class="footer-upgrade">アップグレード</a>
+                <a href="pricing/index.html?lang=ja" class="footer-upgrade">料金</a>
                 <a href="privacy/index.html">プライバシーポリシー</a>
                 <a href="mailto:replymate.support@gmail.com">お問い合わせ</a>
             </div>
@@ -970,7 +1038,10 @@
                 </p>
             </div>
             <div class="hero-cta-wrap">
-                <a href="#" class="hero-cta cta-coming-soon" data-replymate-store aria-disabled="true">Disponible en abril</a>
+                <div class="hero-cta-row">
+                    <a href="#" class="hero-cta cta-coming-soon" data-replymate-store aria-disabled="true">Disponible en abril</a>
+                    <a href="pricing/index.html?lang=es" class="hero-pricing-btn">Ver precios</a>
+                </div>
                 <p class="hero-cta-note">Extensión de navegador — disponible en abril</p>
             </div>
             <div class="demo-video-section">
@@ -993,7 +1064,7 @@
                         <div class="preview">Gracias por la llamada de hoy. Te adjunto el resumen...</div>
                     </div>
                     <div class="mockup-reply">
-                        <span>AI Reply</span> — El borrador aparece aquí
+                        <span>ReplyMate</span> — El borrador aparece aquí
                     </div>
                 </div>
             </div>
@@ -1040,7 +1111,7 @@
                 </div>
                 <div class="step">
                     <div class="step-num">3</div>
-                    <h3>AI Reply</h3>
+                    <h3>ReplyMate</h3>
                     <p>En el mensaje que vas a contestar. Ajusta el tono y genera.</p>
                 </div>
                 <div class="step">
@@ -1061,7 +1132,7 @@
         </section>
         <footer class="footer">
             <div class="footer-links">
-                <a href="upgrade/index.html?lang=es" class="footer-upgrade">Actualizar</a>
+                <a href="pricing/index.html?lang=es" class="footer-upgrade">Precios</a>
                 <a href="privacy/index.html">Política de privacidad</a>
                 <a href="mailto:replymate.support@gmail.com">Contacto</a>
             </div>
@@ -1083,7 +1154,7 @@
     </script>
     <script src="js/replymate-store.js"></script>
     <script>
-        const upgradeLabels = { en: 'Upgrade', ko: '업그레이드', ja: 'アップグレード', es: 'Actualizar' };
+        const upgradeLabels = { en: 'Pricing', ko: '요금제', ja: '料金', es: 'Precios' };
         const comingSoonLabels = { en: 'Coming in April', ko: '4월 출시 예정', ja: '4月公開予定', es: 'Disponible en abril' };
         const authLabels = { signIn: { en: 'Sign in', ko: '로그인', ja: 'ログイン', es: 'Iniciar sesión' }, signOut: { en: 'Sign out', ko: '로그아웃', ja: 'ログアウト', es: 'Cerrar sesión' } };
         const planPillLabels = {
@@ -1093,7 +1164,7 @@
             pro_plus: { en: 'Pro+', ko: 'Pro+', ja: 'Pro+', es: 'Pro+' }
         };
         function getUpgradeHref(lang) {
-            return lang === 'en' ? 'upgrade/index.html' : 'upgrade/index.html?lang=' + lang;
+            return lang === 'en' ? 'pricing/index.html' : 'pricing/index.html?lang=' + lang;
         }
         function syncHeaderUpgradeLinks(lang) {
             const href = getUpgradeHref(lang);
@@ -1101,7 +1172,7 @@
             const pill = document.getElementById('header-plan-pill');
             const comingSoonEl = document.getElementById('header-coming-soon');
             if (upgradeEl) {
-                upgradeEl.textContent = upgradeLabels[lang] || 'Upgrade';
+                upgradeEl.textContent = upgradeLabels[lang] || 'Pricing';
                 upgradeEl.href = href;
             }
             if (pill) pill.href = href;

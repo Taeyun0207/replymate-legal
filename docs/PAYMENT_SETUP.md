@@ -1,6 +1,6 @@
 # ReplyMate Payment Setup Guide
 
-This guide explains how to enable payments on your upgrade page (https://replymateai.app/upgrade/index.html).
+This guide explains how to enable payments on your pricing page (https://replymateai.app/pricing/index.html).
 
 ---
 
@@ -12,13 +12,13 @@ Your backend `.env` should have:
 - `STRIPE_PRICE_PRO_MONTHLY`, `STRIPE_PRICE_PRO_ANNUAL`
 - `STRIPE_PRICE_PRO_PLUS_MONTHLY`, `STRIPE_PRICE_PRO_PLUS_ANNUAL`
 - `STRIPE_WEBHOOK_SECRET`
-- `BILLING_SUCCESS_URL` / `BILLING_CANCEL_URL` → your upgrade page
+- `BILLING_SUCCESS_URL` / `BILLING_CANCEL_URL` → your pricing page
 
 Example:
 
 ```
-BILLING_SUCCESS_URL=https://replymateai.app/upgrade/?success=1
-BILLING_CANCEL_URL=https://replymateai.app/upgrade/
+BILLING_SUCCESS_URL=https://replymateai.app/pricing/?success=1
+BILLING_CANCEL_URL=https://replymateai.app/pricing/
 ```
 
 ---
@@ -87,22 +87,22 @@ if (user) await updateUserPlan(user.id, 'free', null, null);
 **If you get redirected to localhost after Google sign-in, fix this in Supabase:**
 
 1. Go to **Supabase Dashboard** → **Authentication** → **URL Configuration**
-2. Set **Site URL** to `https://replymateai.app` (or `https://replymateai.app/upgrade/index.html`)
+2. Set **Site URL** to `https://replymateai.app` (or `https://replymateai.app/pricing/index.html`)
 3. Under **Redirect URLs**, add:
-   - `https://replymateai.app/upgrade/index.html`
+   - `https://replymateai.app/pricing/index.html`
    - `https://replymateai.app/` (homepage login)
    - `https://replymateai.app/**`
 4. **Remove** `http://localhost:3000` and any other localhost URLs from Redirect URLs
 
 **Site URL** is the fallback when Supabase rejects the redirect. If it's set to localhost, you'll land on localhost after sign-in. Set it to production.
 
-**Homepage login:** Users can sign in on the homepage first; the session is shared with the upgrade page (same origin). Ensure `https://replymateai.app/` is in Redirect URLs.
+**Homepage login:** Users can sign in on the homepage first; the session is shared with the pricing page (same origin). Ensure `https://replymateai.app/` is in Redirect URLs.
 
 ---
 
 ## 4. Google OAuth for Upgrade Page
 
-The upgrade page needs Google Sign-In (same Supabase project as the extension).
+The pricing page needs Google Sign-In (same Supabase project as the extension).
 
 1. Go to **Google Cloud Console** → **APIs & Services** → **Credentials**
 2. Open your OAuth 2.0 Client ID (Web application)
@@ -115,13 +115,13 @@ The upgrade page needs Google Sign-In (same Supabase project as the extension).
 
 ## 5. Upgrade Page Integration
 
-Your upgrade page (`upgrade/index.html`) is already configured with:
+Your pricing page (`pricing/index.html`) is already configured with:
 
 1. **Supabase** – Google sign-in
 2. **Backend** – Creates checkout session
 3. **Redirect** – Sends user to Stripe checkout
 
-### Current setup in `upgrade/index.html`
+### Current setup in `pricing/index.html`
 
 ```html
 <!-- In <head> -->
@@ -133,12 +133,12 @@ Your upgrade page (`upgrade/index.html`) is already configured with:
   window.REPLYMATE_SUPABASE_URL = "https://cmmoirdihefyswerkkay.supabase.co";
   window.REPLYMATE_SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 </script>
-<script src="upgrade-page-checkout.js"></script>
+<script src="pricing-page-checkout.js"></script>
 ```
 
 ### Button data attributes
 
-The upgrade page uses these on Pro/Pro+ plan cards:
+The pricing page uses these on Pro/Pro+ plan cards:
 
 - **Pro Annual (default):** `data-replymate-plan="pro"` `data-replymate-billing="annual"`
 - **Pro Monthly:** `data-replymate-plan="pro"` `data-replymate-billing="monthly"`
@@ -191,7 +191,7 @@ Both flows trigger the success banner. The page refetches subscription status at
 
 ## 6. Quick Option: Open Extension Popup
 
-If you prefer not to add auth to the upgrade page, you can make the buttons open the extension popup instead:
+If you prefer not to add auth to the pricing page, you can make the buttons open the extension popup instead:
 
 ```html
 <a href="chrome-extension://YOUR_EXTENSION_ID/popup.html" target="_blank">
@@ -321,7 +321,7 @@ This makes the "Switch to Annual/Monthly" button redirect to Stripe's Customer P
 
 ## 8. Shared Auth: Homepage, Upgrade Page & Extension Popup
 
-The homepage and upgrade page share the same Supabase session via `storageKey: "replymate-auth"`. Signing in on one automatically signs you in on the other (same origin).
+The homepage and pricing page share the same Supabase session via `storageKey: "replymate-auth"`. Signing in on one automatically signs you in on the other (same origin).
 
 **Extension popup sync:** To share auth with the Chrome extension popup:
 

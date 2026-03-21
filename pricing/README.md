@@ -1,4 +1,4 @@
-# ReplyMate Upgrade Page
+# ReplyMate Pricing Page
 
 Plans & pricing page with Stripe checkout integration.
 
@@ -14,5 +14,5 @@ See **[docs/PAYMENT_SETUP.md](../docs/PAYMENT_SETUP.md)** for full configuration
 
 ## Files
 
-- `index.html` – Upgrade page with Pro/Pro+ plans
-- `upgrade-page-checkout.js` – Checkout & cancel logic
+- `index.html` – Pricing page with Pro/Pro+ plans
+- `pricing-page-checkout.js` – Checkout & cancel logic

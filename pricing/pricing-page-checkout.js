@@ -1,7 +1,7 @@
 /**
  * ReplyMate Upgrade Page - Checkout Integration
  *
- * Add this script to your upgrade page (e.g. replymateai.app/upgrade/index.html)
+ * Add this script to your pricing page (e.g. replymateai.app/pricing/index.html)
  * along with Supabase and the config below.
  *
  * 1. Add to your HTML <head>:
@@ -13,7 +13,7 @@
  *      window.REPLYMATE_SUPABASE_URL = "https://cmmoirdihefyswerkkay.supabase.co";
  *      window.REPLYMATE_SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // same as extension
  *    </script>
- *    <script src="upgrade-page-checkout.js"></script>
+ *    <script src="pricing-page-checkout.js"></script>
  *
  * 3. Add data attributes to your upgrade buttons:
  *    <button data-replymate-plan="pro" data-replymate-billing="annual">Upgrade to Pro</button>
@@ -43,7 +43,7 @@
   const SUPABASE_URL = window.REPLYMATE_SUPABASE_URL;
   const SUPABASE_ANON = window.REPLYMATE_SUPABASE_ANON;
   const LABELS = window.REPLYMATE_LABELS || {};
-  const PRODUCTION_UPGRADE_URL = window.REPLYMATE_UPGRADE_URL || "https://replymateai.app/upgrade/";
+  const PRODUCTION_UPGRADE_URL = window.REPLYMATE_UPGRADE_URL || "https://replymateai.app/pricing/";
 
   if (!SUPABASE_URL || !SUPABASE_ANON) {
     console.warn("[ReplyMate Upgrade] Missing REPLYMATE_SUPABASE_URL or REPLYMATE_SUPABASE_ANON");
@@ -86,7 +86,7 @@
     const isLocalhost = /localhost|127\.0\.0\.1/i.test(window.location.hostname);
     let redirectTo;
     if (window.REPLYMATE_UPGRADE_URL || isLocalhost) {
-      const base = (window.REPLYMATE_UPGRADE_URL || "https://replymateai.app/upgrade/").split("?")[0];
+      const base = (window.REPLYMATE_UPGRADE_URL || "https://replymateai.app/pricing/").split("?")[0];
       redirectTo = plan && billing
         ? base + "?replymate_plan=" + encodeURIComponent(plan) + "&replymate_billing=" + encodeURIComponent(billing)
         : base;
